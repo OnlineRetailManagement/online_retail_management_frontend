@@ -14,6 +14,10 @@ This Project is Powered by React working in Vite with HMR with JavaScript.
 
 #### Steps
 
--
--
--
+```
+npm install
+```
+
+```
+npm run dev
+```
