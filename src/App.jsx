@@ -1,18 +1,16 @@
 //
 
-import { Fragment } from "react";
-import { Button } from "@/components/ui/button";
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import Router from "./routes";
 
 // ----------------------------------------
 
 function App() {
   return (
-    <Fragment>
-      <div className="p-4">
-        <p>Hello World ...!!!!</p>
-        <Button className="mt-4">Click me</Button>
-      </div>
-    </Fragment>
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
   );
 }
 
