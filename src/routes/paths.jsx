@@ -1,6 +1,6 @@
 //
 
 export const PATH_AUTH = {
-  login: "/login",
-  register: "/register",
+  login: "/auth/login",
+  register: "/auth/register",
 };
