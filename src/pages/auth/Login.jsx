@@ -16,10 +16,31 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 // routes
 import { PATH_AUTH } from "../../routes/paths";
+// hooks
+import useAuth from "../../hooks/useAuth";
 
 // ----------------------------------------
 
 export default function Login() {
+  const { login } = useAuth();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const elements = new FormData(e.currentTarget);
+
+    console.log(elements);
+
+    const email = elements.get("email");
+    const password = elements.get("password");
+
+    console.log(email, password);
+
+    if (email?.length && password?.length) {
+      await login(email, password);
+    }
+  };
+
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
@@ -33,13 +54,14 @@ export default function Login() {
             </CardHeader>
 
             <CardContent>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
                       type="email"
+                      name="email"
                       placeholder="m@example.com"
                       required
                     />
@@ -49,7 +71,12 @@ export default function Login() {
                     <div className="flex items-center">
                       <Label htmlFor="password">Password</Label>
                     </div>
-                    <Input id="password" type="password" required />
+                    <Input
+                      id="password"
+                      type="password"
+                      name="password"
+                      required
+                    />
                   </div>
 
                   <Button type="submit" className="w-full">
