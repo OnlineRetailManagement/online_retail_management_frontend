@@ -8,6 +8,8 @@ import Register from "../pages/auth/Register";
 import NotFound from "../pages/NotFound";
 // @users
 import Profile from "../pages/auth/Users/Profile";
+import RoleBasedGuard from "../guards/RoleBasedGuard";
+import UsersLayout from "../layouts/UsersLayout";
 
 // ----------------------------------------
 
@@ -29,6 +31,11 @@ export default function Router() {
 
     {
       path: "/",
+      element: (
+        <RoleBasedGuard accessibleRoles="user">
+          <UsersLayout />
+        </RoleBasedGuard>
+      ),
       children: [
         {
           path: "/profile",
