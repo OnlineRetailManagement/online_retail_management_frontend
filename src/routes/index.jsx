@@ -6,6 +6,8 @@ import { useRoutes, Navigate } from "react-router-dom";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import NotFound from "../pages/NotFound";
+// @users
+import Profile from "../pages/auth/Users/Profile";
 
 // ----------------------------------------
 
@@ -21,6 +23,16 @@ export default function Router() {
         {
           path: "register",
           element: <Register />,
+        },
+      ],
+    },
+
+    {
+      path: "/",
+      children: [
+        {
+          path: "/profile",
+          element: <Profile />,
         },
       ],
     },
