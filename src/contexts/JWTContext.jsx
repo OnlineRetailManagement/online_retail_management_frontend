@@ -68,18 +68,16 @@ function AuthProvider({ children }) {
     const initialize = async () => {
       try {
         const accessToken = window.localStorage.getItem("accessToken");
+        const userData = JSON.parse(window.localStorage.getItem("userData"));
 
-        if (accessToken && isValidToken(accessToken)) {
+        if (accessToken && isValidToken(accessToken) && userData?.email) {
           setSession(accessToken);
-
-          const response = await axios.get("/api/account/my-account");
-          const { user } = response.data;
 
           dispatch({
             type: "INITIALIZE",
             payload: {
               isAuthenticated: true,
-              user,
+              user: userData,
             },
           });
         } else {
@@ -112,17 +110,25 @@ function AuthProvider({ children }) {
       password,
     });
 
-    console.log(response);
+    if (response.data?.code === "200" && response.data.data.email) {
+      const { jwt = "", ...rest } = response.data.data;
 
-    const { accessToken, user } = response.data;
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({
+          ...rest,
+          role: rest?.role[0]?.authority,
+        })
+      );
 
-    setSession(accessToken);
-    dispatch({
-      type: "LOGIN",
-      payload: {
-        user,
-      },
-    });
+      setSession(jwt);
+      dispatch({
+        type: "LOGIN",
+        payload: {
+          user: response.data,
+        },
+      });
+    }
   };
 
   const register = async (email, password, firstName, lastName) => {

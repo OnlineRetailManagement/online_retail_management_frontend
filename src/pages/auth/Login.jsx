@@ -1,8 +1,10 @@
 //
 
-import React from "react";
+import React, { useState } from "react";
 // libs
 import { Link } from "react-router-dom";
+//
+import { Loader2 } from "lucide-react";
 // @shadcn
 import { Button } from "@/components/ui/button";
 import {
@@ -24,19 +26,18 @@ import useAuth from "../../hooks/useAuth";
 export default function Login() {
   const { login } = useAuth();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const elements = new FormData(e.currentTarget);
 
-    console.log(elements);
-
     const email = elements.get("email");
     const password = elements.get("password");
 
-    console.log(email, password);
-
     if (email?.length && password?.length) {
+      setIsLoading(true);
       await login(email, password);
     }
   };
@@ -79,8 +80,9 @@ export default function Login() {
                     />
                   </div>
 
-                  <Button type="submit" className="w-full">
-                    Login
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading && <Loader2 className="animate-spin" />}
+                    {isLoading ? "Please Wait ..." : "Login"}
                   </Button>
                 </div>
 
