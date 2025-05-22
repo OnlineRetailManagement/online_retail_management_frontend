@@ -110,7 +110,7 @@ function AuthProvider({ children }) {
       password,
     });
 
-    if (response.data?.code === "200" && response.data.data.email) {
+    if (response.data?.code === 200 && response.data?.data?.email) {
       const { jwt = "", ...rest } = response.data.data;
 
       localStorage.setItem(
@@ -132,21 +132,32 @@ function AuthProvider({ children }) {
   };
 
   const register = async (email, password, firstName, lastName) => {
-    const response = await axios.post("/api/account/register", {
+    const response = await axios.post("/public/signup", {
       email,
       password,
       firstName,
       lastName,
     });
-    const { accessToken, user } = response.data;
 
-    window.localStorage.setItem("accessToken", accessToken);
-    dispatch({
-      type: "REGISTER",
-      payload: {
-        user,
-      },
-    });
+    if (response.data?.code === 200 && response.data?.data?.email) {
+      const { jwt = "", ...rest } = response.data.data;
+
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({
+          ...rest,
+          role: rest?.role[0]?.authority,
+        })
+      );
+
+      setSession(jwt);
+      dispatch({
+        type: "REGISTER",
+        payload: {
+          user,
+        },
+      });
+    }
   };
 
   const logout = async () => {
