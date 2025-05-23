@@ -2,6 +2,8 @@
 
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
+// auth
+import useAuth from "../hooks/useAuth";
 // ui
 import {
   SidebarProvider,
@@ -21,7 +23,6 @@ import { Separator } from "@/components/ui/separator";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
 import { Avatar } from "@/components/ui/avatar";
@@ -66,6 +67,7 @@ const adminPaths = {
 // ----------------------------------------
 
 export default function AdminsLayout() {
+  const { user } = useAuth();
   const location = useLocation();
   const { pathname } = location;
 
@@ -91,7 +93,7 @@ export default function AdminsLayout() {
         </SidebarContent>
 
         <SidebarFooter>
-          <NavUser user={null} />
+          <NavUser user={user} />
         </SidebarFooter>
 
         <SidebarRail />
@@ -106,11 +108,7 @@ export default function AdminsLayout() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <Link to={currentPageEle?.url ?? ADMIN_PATHS.dashboard}>
-                    <BreadcrumbLink>
-                      {currentPageEle?.name ?? "-"}
-                    </BreadcrumbLink>
-                  </Link>
+                  {currentPageEle?.name ?? "-"}
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -151,6 +149,8 @@ const NavMain = (props) => {
 // ----------------------------------------
 
 const NavUser = (props) => {
+  const { user } = props;
+
   return (
     <SidebarMenu>
       <Link to={ADMIN_PATHS.profile}>
@@ -158,10 +158,12 @@ const NavUser = (props) => {
           size="lg"
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
-          <Avatar className="h-8 w-8 rounded-lg">UN</Avatar>
+          <Avatar className="h-8 w-8 rounded-lg flex items-center justify-center border">
+            {user?.name ?? "NU"}
+          </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">{"User Name"}</span>
-            <span className="truncate text-xs">{"User Email"}</span>
+            <span className="truncate font-semibold">{user?.name ?? "-"}</span>
+            <span className="truncate text-xs">{user?.email ?? "-"}</span>
           </div>
         </SidebarMenuButton>
       </Link>
