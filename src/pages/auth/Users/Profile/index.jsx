@@ -17,16 +17,16 @@ export default function Profile() {
     <div className="flex min-h-svh w-full justify-center p-6 md:p-10">
       <div className="w-full max-w-2xl pt-8">
         <div className="flex flex-col gap-6 border p-6 rounded-2xl">
-          <div className="flex flex-row gap-3">
-            <Avatar>
-              <AvatarFallback>
-                <p className="p-2">NU</p>
-              </AvatarFallback>
-            </Avatar>
+          <div className="flex flex-row items-center gap-3">
+            <div>
+              <Avatar>
+                <AvatarFallback>
+                  <p className="p-2">NU</p>
+                </AvatarFallback>
+              </Avatar>
+            </div>
 
-            <span className="inline-block align-middle leading-6">
-              {"User Name"}
-            </span>
+            <div className="text-sm font-medium">{"User Name"}</div>
           </div>
 
           <div>
