@@ -11,25 +11,28 @@ const initialState = {
   isAuthenticated: false,
   isInitialized: false,
   user: null,
+  userRole: null,
 };
 
 const handlers = {
   INITIALIZE: (state, action) => {
-    const { isAuthenticated, user } = action.payload;
+    const { isAuthenticated, user, userRole } = action.payload;
     return {
       ...state,
       isAuthenticated,
       isInitialized: true,
       user,
+      userRole,
     };
   },
   LOGIN: (state, action) => {
-    const { user } = action.payload;
+    const { user, userRole } = action.payload;
 
     return {
       ...state,
       isAuthenticated: true,
       user,
+      userRole,
     };
   },
   LOGOUT: (state) => ({
@@ -38,12 +41,13 @@ const handlers = {
     user: null,
   }),
   REGISTER: (state, action) => {
-    const { user } = action.payload;
+    const { user, userRole } = action.payload;
 
     return {
       ...state,
       isAuthenticated: true,
       user,
+      userRole,
     };
   },
 };
@@ -64,6 +68,13 @@ const AuthContext = createContext({
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const normaliseUserRole = (role) => {
+    if (!role) return null;
+    else if (role === "ROLE_USER") return "user";
+    else if (role === "ROLE_VENDOR") return "vendor";
+    else if (role === "ROLE_ADMIN") return "admin";
+  };
+
   useEffect(() => {
     const initialize = async () => {
       try {
@@ -78,6 +89,7 @@ function AuthProvider({ children }) {
             payload: {
               isAuthenticated: true,
               user: userData,
+              userRole: normaliseUserRole(userData?.role[0]?.authority),
             },
           });
         } else {
@@ -87,6 +99,7 @@ function AuthProvider({ children }) {
             payload: {
               isAuthenticated: false,
               user: null,
+              userRole: null,
             },
           });
         }
@@ -97,6 +110,7 @@ function AuthProvider({ children }) {
           payload: {
             isAuthenticated: false,
             user: null,
+            userRole: null,
           },
         });
       }
@@ -118,7 +132,7 @@ function AuthProvider({ children }) {
         "userData",
         JSON.stringify({
           ...rest,
-          role: rest?.role[0]?.authority,
+          role: normaliseUserRole(rest?.role[0]?.authority),
         })
       );
 
@@ -127,6 +141,7 @@ function AuthProvider({ children }) {
         type: "LOGIN",
         payload: {
           user: response.data,
+          userRole: normaliseUserRole(rest?.role[0]?.authority),
         },
       });
     }
@@ -147,7 +162,7 @@ function AuthProvider({ children }) {
         "userData",
         JSON.stringify({
           ...rest,
-          role: rest?.role[0]?.authority,
+          role: normaliseUserRole(rest?.role[0]?.authority),
         })
       );
 
@@ -156,6 +171,7 @@ function AuthProvider({ children }) {
         type: "REGISTER",
         payload: {
           user,
+          userRole: normaliseUserRole(rest?.role[0]?.authority),
         },
       });
     }
