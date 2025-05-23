@@ -6,10 +6,14 @@ import { useRoutes, Navigate } from "react-router-dom";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import NotFound from "../pages/NotFound";
-// @users
-import Profile from "../pages/auth/Users/Profile";
+// guards
+import GuestGuard from "../guards/GuestGuard";
 import RoleBasedGuard from "../guards/RoleBasedGuard";
+// layouts
 import UsersLayout from "../layouts/UsersLayout";
+// @users
+import Dashboard from "../pages/auth/Users/Dashboard";
+import Profile from "../pages/auth/Users/Profile";
 
 // ----------------------------------------
 
@@ -20,11 +24,19 @@ export default function Router() {
       children: [
         {
           path: "login",
-          element: <Login />,
+          element: (
+            <GuestGuard>
+              <Login />
+            </GuestGuard>
+          ),
         },
         {
           path: "register",
-          element: <Register />,
+          element: (
+            <GuestGuard>
+              <Register />
+            </GuestGuard>
+          ),
         },
       ],
     },
@@ -37,6 +49,10 @@ export default function Router() {
         </RoleBasedGuard>
       ),
       children: [
+        {
+          path: "/dashboard",
+          element: <Dashboard />,
+        },
         {
           path: "/profile",
           element: <Profile />,
