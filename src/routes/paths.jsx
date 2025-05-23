@@ -8,8 +8,10 @@ export const PATH_AUTH = {
 // admin
 export const ADMIN_PATHS = {
   dashboard: "/admin/dashboard",
+  products: "/admin/products",
   users: "/admin/users",
   vendors: "/admin/vendors",
+  profile: "/admin/profile",
 };
 
 // vendor
