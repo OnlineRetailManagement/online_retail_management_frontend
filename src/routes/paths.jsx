@@ -5,19 +5,21 @@ export const PATH_AUTH = {
   register: "/auth/register",
 };
 
+// admin
 export const ADMIN_PATHS = {
-  // admin
-  users: "/users",
-  vendors: "/vendors",
+  dashboard: "/admin/dashboard",
+  users: "/admin/users",
+  vendors: "/admin/vendors",
 };
 
+// vendor
 export const VENDOR_PATHS = {
-  // vendor
-  myProducts: "/my-products",
+  dashboard: "/vendor/dashboard",
+  myProducts: "/vendor/my-products",
 };
 
+// user
 export const USER_PATHS = {
-  // user
-  dashboard: "/dashboard",
-  profile: "/profile",
+  dashboard: "/user/dashboard",
+  profile: "/user/profile",
 };
