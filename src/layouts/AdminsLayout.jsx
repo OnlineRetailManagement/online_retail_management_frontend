@@ -1,7 +1,7 @@
 //
 
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 // ui
 import {
   SidebarProvider,
@@ -14,7 +14,16 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarInset,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+} from "@/components/ui/breadcrumb";
 import { Avatar } from "@/components/ui/avatar";
 // paths
 import { ADMIN_PATHS } from "../routes/paths";
@@ -57,13 +66,21 @@ const adminPaths = {
 // ----------------------------------------
 
 export default function AdminsLayout() {
+  const location = useLocation();
+  const { pathname } = location;
+
+  const currentPageEle = adminPaths.paths.find((el) => el.url === pathname);
+
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon">
         <SidebarHeader>
           <div className="flex items-center space-x-2 m-2 my-4">
-            <Frame />
-            <div className="text-sm">Online Retail</div>
+            <Frame className="size-4" />
+
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">Online Retail</span>
+            </div>
           </div>
         </SidebarHeader>
 
@@ -80,7 +97,30 @@ export default function AdminsLayout() {
         <SidebarRail />
       </Sidebar>
 
-      <Outlet />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <Link to={currentPageEle?.url ?? ADMIN_PATHS.dashboard}>
+                    <BreadcrumbLink>
+                      {currentPageEle?.name ?? "-"}
+                    </BreadcrumbLink>
+                  </Link>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+        </header>
+
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <Outlet />
+        </div>
+      </SidebarInset>
     </SidebarProvider>
   );
 }
