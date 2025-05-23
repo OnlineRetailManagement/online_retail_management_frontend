@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
+    "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.7",
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
@@ -21,7 +22,10 @@
     "radix-ui": "^1.4.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.0",
+    "redux": "^5.0.1",
+    "redux-persist": "^6.0.0",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.7"
   },
