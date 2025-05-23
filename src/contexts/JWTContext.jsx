@@ -81,6 +81,7 @@ function AuthProvider({ children }) {
             },
           });
         } else {
+          setSession(null);
           dispatch({
             type: "INITIALIZE",
             payload: {
