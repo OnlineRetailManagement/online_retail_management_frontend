@@ -3,22 +3,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
 // routes
-import { PATH_AUTH } from "../routes/paths";
+import { ADMIN_PATHS, USER_PATHS, VENDOR_PATHS } from "../routes/paths";
 
 // ----------------------------------------------------------------------
 
 const useCurrentRole = () => {
   const currentUser = JSON.parse(window.localStorage.getItem("userData"));
 
-  if (currentUser?.role === "ROLE_USER") {
-    return "user";
-  } else if (currentUser?.role === "ROLE_VENDOR") {
-    return "vendor";
-  } else if (currentUser?.role === "ROLE_ADMIN") {
-    return "admin";
-  } else {
-    return null;
-  }
+  if (currentUser?.role === "user") return "user";
+  else if (currentUser?.role === "vendor") return "vendor";
+  else if (currentUser?.role === "admin") return "admin";
+  else return null;
 };
 
 export default function RoleBasedGuard({ accessibleRoles, children }) {
@@ -38,10 +33,16 @@ export default function RoleBasedGuard({ accessibleRoles, children }) {
             <div className="mt-4 text-sm">
               Go back to{" "}
               <Link
-                to={PATH_AUTH.login}
+                to={
+                  currentRole === "admin"
+                    ? ADMIN_PATHS.dashboard
+                    : currentRole === "vendor"
+                    ? VENDOR_PATHS.dashboard
+                    : USER_PATHS.dashboard
+                }
                 className="underline underline-offset-4"
               >
-                Login Page
+                Dashboard
               </Link>
             </div>
           </div>
