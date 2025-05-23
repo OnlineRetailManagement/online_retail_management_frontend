@@ -25,6 +25,7 @@ const setSession = (accessToken) => {
     axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
   } else {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("userData");
     delete axios.defaults.headers.common.Authorization;
   }
 };
