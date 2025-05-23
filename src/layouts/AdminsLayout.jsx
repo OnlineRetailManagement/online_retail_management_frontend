@@ -108,7 +108,7 @@ export default function AdminsLayout() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  {currentPageEle?.name ?? "-"}
+                  {currentPageEle?.name ?? "Profile"}
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>

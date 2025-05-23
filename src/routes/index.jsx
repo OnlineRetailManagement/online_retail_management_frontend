@@ -20,6 +20,10 @@ import Profile from "../pages/Users/Profile";
 import VendorsDashboard from "../pages/Vendors/Dashboard";
 // @admin
 import AdminsDashboard from "../pages/Admin/Dashboard";
+import AdminsProducts from "../pages/Admin/Products";
+import AdminsUsers from "../pages/Admin/Users";
+import AdminsVendors from "../pages/Admin/Vendors";
+import AdminsProfile from "../pages/Admin/Profile";
 
 // ----------------------------------------
 
@@ -95,6 +99,22 @@ export default function Router() {
         {
           path: "dashboard",
           element: <AdminsDashboard />,
+        },
+        {
+          path: "products",
+          element: <AdminsProducts />,
+        },
+        {
+          path: "users",
+          element: <AdminsUsers />,
+        },
+        {
+          path: "vendors",
+          element: <AdminsVendors />,
+        },
+        {
+          path: "profile",
+          element: <AdminsProfile />,
         },
       ],
     },
