@@ -11,9 +11,15 @@ import GuestGuard from "../guards/GuestGuard";
 import RoleBasedGuard from "../guards/RoleBasedGuard";
 // layouts
 import UsersLayout from "../layouts/UsersLayout";
+import VendorsLayout from "../layouts/VendorsLayout";
+import AdminsLayout from "../layouts/AdminsLayout";
 // @users
-import Dashboard from "../pages/auth/Users/Dashboard";
-import Profile from "../pages/auth/Users/Profile";
+import UsersDashboard from "../pages/Users/Dashboard";
+import Profile from "../pages/Users/Profile";
+// @vendors
+import VendorsDashboard from "../pages/Vendors/Dashboard";
+// @admin
+import AdminsDashboard from "../pages/Admin/Dashboard";
 
 // ----------------------------------------
 
@@ -41,8 +47,9 @@ export default function Router() {
       ],
     },
 
+    // users routes
     {
-      path: "/",
+      path: "user",
       element: (
         <RoleBasedGuard accessibleRoles="user">
           <UsersLayout />
@@ -50,12 +57,44 @@ export default function Router() {
       ),
       children: [
         {
-          path: "/dashboard",
-          element: <Dashboard />,
+          path: "dashboard",
+          element: <UsersDashboard />,
         },
         {
-          path: "/profile",
+          path: "profile",
           element: <Profile />,
+        },
+      ],
+    },
+
+    // vendors routes
+    {
+      path: "vendor",
+      element: (
+        <RoleBasedGuard accessibleRoles="vendor">
+          <VendorsLayout />
+        </RoleBasedGuard>
+      ),
+      children: [
+        {
+          path: "dashboard",
+          element: <VendorsDashboard />,
+        },
+      ],
+    },
+
+    // admins routes
+    {
+      path: "admin",
+      element: (
+        <RoleBasedGuard accessibleRoles="admin">
+          <AdminsLayout />
+        </RoleBasedGuard>
+      ),
+      children: [
+        {
+          path: "dashboard",
+          element: <AdminsDashboard />,
         },
       ],
     },
