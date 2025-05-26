@@ -1,9 +1,16 @@
 //
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 // routes
-import { ADMIN_PATHS, USER_PATHS, VENDOR_PATHS } from "../routes/paths";
+import {
+  PATH_AUTH,
+  ADMIN_PATHS,
+  USER_PATHS,
+  VENDOR_PATHS,
+} from "../routes/paths";
+// hooks
+import useAuth from "../hooks/useAuth";
 
 // ----------------------------------------------------------------------
 
@@ -17,7 +24,12 @@ const useCurrentRole = () => {
 };
 
 export default function RoleBasedGuard({ accessibleRoles, children }) {
+  const { isAuthenticated } = useAuth();
   const currentRole = useCurrentRole();
+
+  if (!isAuthenticated) {
+    return <Navigate to={PATH_AUTH.login} />;
+  }
 
   // if user role doesnt match, show the restricted ui and link to go back to the login page ...
   if (!accessibleRoles.includes(currentRole)) {
