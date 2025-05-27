@@ -1,6 +1,6 @@
 //
 
-import React from "react";
+import React, { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 // routes
 import {
@@ -24,11 +24,24 @@ const useCurrentRole = () => {
 };
 
 export default function RoleBasedGuard({ accessibleRoles, children }) {
-  const { isAuthenticated } = useAuth();
+  const { isInitialized, isAuthenticated } = useAuth();
   const currentRole = useCurrentRole();
+  const [requestedLocation, setRequestedLocation] = useState(null);
+
+  if (!isInitialized) {
+    return <p>Loading ...</p>;
+  }
 
   if (!isAuthenticated) {
-    return <Navigate to={PATH_AUTH.login} />;
+    if (pathname !== requestedLocation) {
+      setRequestedLocation(pathname);
+    }
+    return <Login />;
+  }
+
+  if (requestedLocation && pathname !== requestedLocation) {
+    setRequestedLocation(null);
+    return <Navigate to={requestedLocation} />;
   }
 
   // if user role doesnt match, show the restricted ui and link to go back to the login page ...
