@@ -1,16 +1,13 @@
 //
 
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 // routes
-import {
-  PATH_AUTH,
-  ADMIN_PATHS,
-  USER_PATHS,
-  VENDOR_PATHS,
-} from "../routes/paths";
+import { ADMIN_PATHS, USER_PATHS, VENDOR_PATHS } from "../routes/paths";
 // hooks
 import useAuth from "../hooks/useAuth";
+// pages
+import Login from "../pages/auth/Login";
 
 // ----------------------------------------------------------------------
 
@@ -25,6 +22,7 @@ const useCurrentRole = () => {
 
 export default function RoleBasedGuard({ accessibleRoles, children }) {
   const { isInitialized, isAuthenticated } = useAuth();
+  const { pathname } = useLocation();
   const currentRole = useCurrentRole();
   const [requestedLocation, setRequestedLocation] = useState(null);
 
