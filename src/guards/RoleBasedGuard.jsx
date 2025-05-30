@@ -14,9 +14,9 @@ import Login from "../pages/auth/Login";
 const useCurrentRole = () => {
   const currentUser = JSON.parse(window.localStorage.getItem("userData"));
 
-  if (currentUser?.role === "user") return "user";
-  else if (currentUser?.role === "vendor") return "vendor";
-  else if (currentUser?.role === "admin") return "admin";
+  if (currentUser?.userRole === "user") return "user";
+  else if (currentUser?.userRole === "vendor") return "vendor";
+  else if (currentUser?.userRole === "admin") return "admin";
   else return null;
 };
 
@@ -42,7 +42,7 @@ export default function RoleBasedGuard({ accessibleRoles, children }) {
     return <Navigate to={requestedLocation} />;
   }
 
-  // if user role doesnt match, show the restricted ui and link to go back to the login page ...
+  // if user userRole doesnt match, show the restricted ui and link to go back to the login page ...
   if (!accessibleRoles.includes(currentRole)) {
     return (
       <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">

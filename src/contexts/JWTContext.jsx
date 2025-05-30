@@ -132,7 +132,7 @@ function AuthProvider({ children }) {
         "userData",
         JSON.stringify({
           ...rest,
-          role: normaliseUserRole(rest?.role[0]?.authority),
+          userRole: normaliseUserRole(rest?.role[0]?.authority),
         })
       );
 
@@ -140,7 +140,7 @@ function AuthProvider({ children }) {
       dispatch({
         type: "LOGIN",
         payload: {
-          user: response.data,
+          user: rest,
           userRole: normaliseUserRole(rest?.role[0]?.authority),
         },
       });
@@ -162,7 +162,7 @@ function AuthProvider({ children }) {
         "userData",
         JSON.stringify({
           ...rest,
-          role: normaliseUserRole(rest?.role[0]?.authority),
+          userRole: normaliseUserRole(rest?.role[0]?.authority),
         })
       );
 
@@ -170,7 +170,7 @@ function AuthProvider({ children }) {
       dispatch({
         type: "REGISTER",
         payload: {
-          user,
+          user: rest,
           userRole: normaliseUserRole(rest?.role[0]?.authority),
         },
       });
