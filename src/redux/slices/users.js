@@ -46,11 +46,11 @@ export function getUsers(payload) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      // WARNING: it should be GET method ...
-      const response = await axios.post("/admin/get-all-users", payload);
+      const response = await axios.get("/admin/users", {
+        params: payload,
+      });
 
-      // WARNING: "Users" or any keys should be in smallCase ...
-      dispatch(slice.actions.getUsersSuccess(response.data?.data?.Users ?? []));
+      dispatch(slice.actions.getUsersSuccess(response.data?.data?.users ?? []));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
