@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/Switch";
 // routes
 import { PATH_AUTH } from "../../routes/paths";
 // hooks
@@ -37,9 +38,12 @@ export default function Register() {
     const firstName = elements.get("firstName");
     const lastName = elements.get("lastName");
 
+    const role =
+      elements.get("is_vendor") === "on" ? "ROLE_VENDOR" : "ROLE_USER";
+
     if (email?.length && password?.length) {
       setIsLoading(true);
-      await register(email, password, firstName, lastName);
+      await register(email, password, firstName, lastName, role);
     }
   };
 
@@ -105,6 +109,13 @@ export default function Register() {
                       type="password"
                       required
                     />
+                  </div>
+
+                  <div className="grid">
+                    <div className="flex justify-end space-x-2 gap-2">
+                      <Label htmlFor="is_vendor">Are you vendor ...?</Label>
+                      <Switch id="is_vendor" name="is_vendor" />
+                    </div>
                   </div>
 
                   <Button type="submit" className="w-full" disabled={isLoading}>

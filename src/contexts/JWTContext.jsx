@@ -147,12 +147,13 @@ function AuthProvider({ children }) {
     }
   };
 
-  const register = async (email, password, firstName, lastName) => {
+  const register = async (email, password, firstName, lastName, role) => {
     const response = await axios.post("/public/signup", {
       email,
       password,
       firstName,
       lastName,
+      role,
     });
 
     if (response.data?.code === 200 && response.data?.data?.email) {
