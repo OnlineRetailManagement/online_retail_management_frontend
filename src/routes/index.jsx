@@ -29,6 +29,13 @@ import AdminsProfile from "../pages/Admin/Profile";
 
 export default function Router() {
   return useRoutes([
+    // redirect user to auth page
+    {
+      path: "/",
+      element: <Navigate to="/auth/login" replace />,
+    },
+
+    // auth routes
     {
       path: "auth",
       children: [
