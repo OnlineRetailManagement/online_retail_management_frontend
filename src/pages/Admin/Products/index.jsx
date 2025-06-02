@@ -22,11 +22,8 @@ export default function Products() {
   const { isLoading, products } = useSelector((state) => state.products);
 
   useEffect(() => {
-    //
     dispatch(getProducts({ offset: 0, limit: 10 }));
   }, [dispatch]);
-
-  console.log(isLoading, products);
 
   if (isLoading) {
     return (
@@ -58,30 +55,48 @@ export default function Products() {
           </TableHeader>
 
           <TableBody className="**:data-[slot=table-cell]:first:w-8">
-            {products?.map((products, id) => {
-              return (
-                <TableRow key={`products-${id}`}>
-                  <TableCell colSpan={1} className="h-24 text-center">
-                    {products?.firstName && "-"}
-                  </TableCell>
-
-                  <TableCell colSpan={1} className="h-24 text-center">
-                    {products?.lastName && "-"}
-                  </TableCell>
-
-                  <TableCell colSpan={1} className="h-24 text-center">
-                    {products?.email ?? "-"}
-                  </TableCell>
-
-                  <TableCell colSpan={1} className="h-24 text-center">
-                    {products?.location ?? "-"}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+            <TableBodyContent products={products?.products} />
           </TableBody>
         </Table>
       </div>
     </div>
   );
 }
+
+const TableBodyContent = (data) => {
+  const { products } = data;
+
+  if (!products?.length) {
+    return (
+      <TableRow>
+        <TableCell colSpan={4}>No Products Data Added Yet.</TableCell>
+      </TableRow>
+    );
+  }
+
+  return (
+    <>
+      {products?.map((products, id) => {
+        return (
+          <TableRow key={`products-${id}`}>
+            <TableCell colSpan={1} className="h-24 text-center">
+              {products?.firstName && "-"}
+            </TableCell>
+
+            <TableCell colSpan={1} className="h-24 text-center">
+              {products?.lastName && "-"}
+            </TableCell>
+
+            <TableCell colSpan={1} className="h-24 text-center">
+              {products?.email ?? "-"}
+            </TableCell>
+
+            <TableCell colSpan={1} className="h-24 text-center">
+              {products?.location ?? "-"}
+            </TableCell>
+          </TableRow>
+        );
+      })}
+    </>
+  );
+};
