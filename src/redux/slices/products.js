@@ -30,7 +30,7 @@ const slice = createSlice({
     },
 
     getProductsSuccess(state, action) {
-      state.isLoading = products;
+      state.isLoading = false;
       state.products = action.payload;
     },
   },
@@ -49,11 +49,7 @@ export function getProducts(payload) {
         params: payload,
       });
 
-      console.log(response);
-
-      dispatch(
-        slice.actions.getProductsSuccess(response.data?.data?.products ?? [])
-      );
+      dispatch(slice.actions.getProductsSuccess(response.data?.data ?? []));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }

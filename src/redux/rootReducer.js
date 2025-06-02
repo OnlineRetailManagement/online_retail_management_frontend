@@ -4,7 +4,7 @@ import { combineReducers } from "redux";
 import storage from "redux-persist/lib/storage";
 // slices
 import usersReducer from "./slices/users";
-import productsReducer from "./slices/users";
+import productsReducer from "./slices/products";
 
 // ----------------------------------------
 
