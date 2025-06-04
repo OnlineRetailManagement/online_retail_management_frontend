@@ -2,6 +2,8 @@
 
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
+// sonner-toast
+import { toast } from "sonner";
 // auth
 import useAuth from "../hooks/useAuth";
 // ui
@@ -77,6 +79,8 @@ export default function AdminsLayout() {
 
   const handleLogOut = async () => {
     await logout();
+
+    toast.success("User has been logged out successfully ...!!!");
   };
 
   return (
