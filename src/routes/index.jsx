@@ -10,9 +10,7 @@ import NotFound from "../pages/NotFound";
 import GuestGuard from "../guards/GuestGuard";
 import RoleBasedGuard from "../guards/RoleBasedGuard";
 // layouts
-import UsersLayout from "../layouts/UsersLayout";
-import VendorsLayout from "../layouts/VendorsLayout";
-import AdminsLayout from "../layouts/AdminsLayout";
+import NavBarLayout from "../layouts/NavBarLayout";
 // @users
 import UsersDashboard from "../pages/Users/Dashboard";
 import Profile from "../pages/Users/Profile";
@@ -63,7 +61,7 @@ export default function Router() {
       path: "user",
       element: (
         <RoleBasedGuard accessibleRoles="user">
-          <UsersLayout />
+          <NavBarLayout />
         </RoleBasedGuard>
       ),
       children: [
@@ -83,7 +81,7 @@ export default function Router() {
       path: "vendor",
       element: (
         <RoleBasedGuard accessibleRoles="vendor">
-          <VendorsLayout />
+          <NavBarLayout />
         </RoleBasedGuard>
       ),
       children: [
@@ -99,7 +97,7 @@ export default function Router() {
       path: "admin",
       element: (
         <RoleBasedGuard accessibleRoles="admin">
-          <AdminsLayout />
+          <NavBarLayout />
         </RoleBasedGuard>
       ),
       children: [
