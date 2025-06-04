@@ -13,16 +13,18 @@ import {
   TableHead,
   TableBody,
 } from "@/components/ui/table";
+import useAuth from "../../../hooks/useAuth";
 
 // ----------------------------------------
 
 export default function Products() {
   const dispatch = useDispatch();
+  const { userRole } = useAuth();
 
   const { isLoading, products } = useSelector((state) => state.products);
 
   useEffect(() => {
-    dispatch(getProducts({ offset: 0, limit: 10 }));
+    dispatch(getProducts({ offset: 0, limit: 10 }, userRole));
   }, [dispatch]);
 
   if (isLoading) {
@@ -44,13 +46,17 @@ export default function Products() {
         <Table className="border rounded-2xl">
           <TableHeader className="sticky top-0 z-10 bg-muted">
             <TableRow>
-              <TableHead colSpan={1}>Product</TableHead>
-
               <TableHead colSpan={1}>Title</TableHead>
 
               <TableHead colSpan={1}>Description</TableHead>
 
-              <TableHead colSpan={1}>Order</TableHead>
+              <TableHead colSpan={1}>Category</TableHead>
+
+              <TableHead colSpan={1}>Price</TableHead>
+
+              <TableHead colSpan={1}>Total Quantity</TableHead>
+
+              <TableHead colSpan={1}>Available Quantity</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -76,23 +82,36 @@ const TableBodyContent = (data) => {
 
   return (
     <>
-      {products?.map((products, id) => {
+      {products?.map((product, id) => {
         return (
           <TableRow key={`products-${id}`}>
-            <TableCell colSpan={1} className="h-24 text-center">
-              {products?.firstName && "-"}
+            <TableCell colSpan={1} className="h-24">
+              {product?.title ?? "-"}
             </TableCell>
 
-            <TableCell colSpan={1} className="h-24 text-center">
-              {products?.lastName && "-"}
+            <TableCell colSpan={1} className="h-24">
+              {product?.titleDescription ?? "-"}
             </TableCell>
 
-            <TableCell colSpan={1} className="h-24 text-center">
-              {products?.email ?? "-"}
+            <TableCell colSpan={1} className="h-24">
+              {product?.category ?? "-"}
             </TableCell>
 
-            <TableCell colSpan={1} className="h-24 text-center">
-              {products?.location ?? "-"}
+            <TableCell colSpan={1} className="h-24">
+              <span className="line-through">{product?.actualPrice}</span>
+              <span> </span>
+              <span className="font-bold text-base">
+                {product?.discountedPrice}
+              </span>{" "}
+              EUR
+            </TableCell>
+
+            <TableCell colSpan={1} className="h-24">
+              {product?.totalQuantity ?? "-"}
+            </TableCell>
+
+            <TableCell colSpan={1} className="h-24">
+              {product?.availableQuantity ?? "-"}
             </TableCell>
           </TableRow>
         );
