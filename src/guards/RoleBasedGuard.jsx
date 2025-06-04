@@ -3,7 +3,12 @@
 import React, { useState } from "react";
 import { Link, Navigate, useLocation } from "react-router-dom";
 // routes
-import { ADMIN_PATHS, USER_PATHS, VENDOR_PATHS } from "../routes/paths";
+import {
+  ADMIN_PATHS,
+  PATH_AUTH,
+  USER_PATHS,
+  VENDOR_PATHS,
+} from "../routes/paths";
 // hooks
 import useAuth from "../hooks/useAuth";
 // pages
@@ -34,7 +39,7 @@ export default function RoleBasedGuard({ accessibleRoles, children }) {
     if (pathname !== requestedLocation) {
       setRequestedLocation(pathname);
     }
-    return <Login />;
+    return <Navigate to={PATH_AUTH.login} replace />;
   }
 
   if (requestedLocation && pathname !== requestedLocation) {

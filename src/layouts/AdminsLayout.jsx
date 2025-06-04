@@ -26,6 +26,7 @@ import {
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
 import { Avatar } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 // paths
 import { ADMIN_PATHS } from "../routes/paths";
 // icons
@@ -35,6 +36,7 @@ import {
   Building,
   PackageSearch,
   Frame,
+  CirclePower,
 } from "lucide-react";
 
 // ----------------------------------------
@@ -67,11 +69,15 @@ const adminPaths = {
 // ----------------------------------------
 
 export default function AdminsLayout() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const location = useLocation();
   const { pathname } = location;
 
   const currentPageEle = adminPaths.paths.find((el) => el.url === pathname);
+
+  const handleLogOut = async () => {
+    await logout();
+  };
 
   return (
     <SidebarProvider>
@@ -100,7 +106,7 @@ export default function AdminsLayout() {
       </Sidebar>
 
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <header className="flex justify-between h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
@@ -112,6 +118,17 @@ export default function AdminsLayout() {
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
+          </div>
+
+          <div className="flex items-center gap-2 px-4">
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor-pointer"
+              onClick={handleLogOut}
+            >
+              <CirclePower /> Log Out
+            </Button>
           </div>
         </header>
 
