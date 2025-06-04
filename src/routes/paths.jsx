@@ -18,6 +18,7 @@ export const ADMIN_PATHS = {
 export const VENDOR_PATHS = {
   dashboard: "/vendor/dashboard",
   products: "/vendor/products",
+  addProducts: "/vendor/add-products",
   orders: "/vendor/orders",
   profile: "/vendor/profile",
 };

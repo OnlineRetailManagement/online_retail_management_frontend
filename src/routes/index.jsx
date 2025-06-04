@@ -16,6 +16,8 @@ import UsersDashboard from "../pages/Users/Dashboard";
 import Profile from "../pages/Users/Profile";
 // @vendors
 import VendorsDashboard from "../pages/Vendors/Dashboard";
+import VendorsProducts from "../pages/Vendors/Products";
+import VendorsAddProducts from "../pages/Vendors/AddProduct";
 // @admin
 import AdminsDashboard from "../pages/Admin/Dashboard";
 import AdminsProducts from "../pages/Admin/Products";
@@ -88,6 +90,14 @@ export default function Router() {
         {
           path: "dashboard",
           element: <VendorsDashboard />,
+        },
+        {
+          path: "products",
+          element: <VendorsProducts />,
+        },
+        {
+          path: "add-products",
+          element: <VendorsAddProducts />,
         },
       ],
     },
