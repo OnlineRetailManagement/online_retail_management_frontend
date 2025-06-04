@@ -28,7 +28,7 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 // paths
-import { ADMIN_PATHS } from "../routes/paths";
+import { ADMIN_PATHS, USER_PATHS, VENDOR_PATHS } from "../routes/paths";
 // icons
 import {
   LayoutDashboard,
@@ -37,6 +37,7 @@ import {
   PackageSearch,
   Frame,
   CirclePower,
+  ShoppingCart,
 } from "lucide-react";
 
 // ----------------------------------------
@@ -66,14 +67,70 @@ const adminPaths = {
   ],
 };
 
+const vendorPaths = {
+  paths: [
+    {
+      name: "dashboard",
+      url: VENDOR_PATHS.dashboard,
+      icon: LayoutDashboard,
+    },
+    {
+      name: "products",
+      url: VENDOR_PATHS.products,
+      icon: PackageSearch,
+    },
+    {
+      name: "orders",
+      url: VENDOR_PATHS.orders,
+      icon: ShoppingCart,
+    },
+  ],
+};
+
+const userPaths = {
+  paths: [
+    {
+      name: "dashboard",
+      url: USER_PATHS.dashboard,
+      icon: LayoutDashboard,
+    },
+    {
+      name: "products",
+      url: USER_PATHS.products,
+      icon: PackageSearch,
+    },
+    {
+      name: "orders",
+      url: USER_PATHS.orders,
+      icon: ShoppingCart,
+    },
+  ],
+};
+
 // ----------------------------------------
 
-export default function AdminsLayout() {
-  const { user, logout } = useAuth();
+export default function NavBarLayout() {
+  const { user, userRole, logout } = useAuth();
   const location = useLocation();
   const { pathname } = location;
 
-  const currentPageEle = adminPaths.paths.find((el) => el.url === pathname);
+  const navPaths =
+    userRole === "admin"
+      ? adminPaths
+      : userRole === "vendor"
+      ? vendorPaths
+      : userRole === "user"
+      ? userPaths
+      : [];
+
+  const headerText =
+    userRole === "admin"
+      ? "Online Retail (Admin Portal)"
+      : userRole === "vendor"
+      ? "Online Retail (Vendor Portal)"
+      : "Online Retail";
+
+  const currentPageEle = navPaths.paths.find((el) => el.url === pathname);
 
   const handleLogOut = async () => {
     await logout();
@@ -87,7 +144,7 @@ export default function AdminsLayout() {
             <Frame className="size-4" />
 
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">Online Retail</span>
+              <span className="truncate font-semibold">{headerText}</span>
             </div>
           </div>
         </SidebarHeader>
@@ -95,7 +152,7 @@ export default function AdminsLayout() {
         <div className="border-t py-2" />
 
         <SidebarContent>
-          <NavMain adminPaths={adminPaths} />
+          <NavMain visiblePaths={navPaths} />
         </SidebarContent>
 
         <SidebarFooter>
@@ -143,12 +200,12 @@ export default function AdminsLayout() {
 // ----------------------------------------
 
 const NavMain = (props) => {
-  const { adminPaths } = props;
+  const { visiblePaths } = props;
 
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {adminPaths?.paths?.map((item) => (
+        {visiblePaths?.paths?.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
               <Link to={item.url}>
