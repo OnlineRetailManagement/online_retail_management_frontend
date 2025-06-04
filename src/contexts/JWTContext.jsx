@@ -35,11 +35,6 @@ const handlers = {
       userRole,
     };
   },
-  LOGOUT: (state) => ({
-    ...state,
-    isAuthenticated: false,
-    user: null,
-  }),
   REGISTER: (state, action) => {
     const { user, userRole } = action.payload;
 
@@ -50,6 +45,12 @@ const handlers = {
       userRole,
     };
   },
+  LOGOUT: (state) => ({
+    ...state,
+    isAuthenticated: false,
+    user: null,
+    userRole: null,
+  }),
 };
 
 const reducer = (state, action) =>
@@ -180,6 +181,8 @@ function AuthProvider({ children }) {
 
   const logout = async () => {
     setSession(null);
+    window.localStorage.removeItem("accessToken");
+    window.localStorage.removeItem("userData");
     dispatch({ type: "LOGOUT" });
   };
 
