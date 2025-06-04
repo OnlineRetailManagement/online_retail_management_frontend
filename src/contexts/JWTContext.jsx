@@ -1,6 +1,8 @@
 //
 
 import { createContext, useEffect, useReducer } from "react";
+// sonner-toast
+import { toast } from "sonner";
 // utils
 import axios from "../utils/axios";
 import { isValidToken, setSession } from "../utils/jwt";
@@ -158,6 +160,8 @@ function AuthProvider({ children }) {
     });
 
     if (response.data?.code === 200 && response.data?.data?.email) {
+      toast.success("Your profile has been created successfully ...!!!");
+
       const { jwt = "", ...rest } = response.data.data;
 
       localStorage.setItem(
@@ -176,6 +180,10 @@ function AuthProvider({ children }) {
           userRole: normaliseUserRole(rest?.role[0]?.authority),
         },
       });
+    } else {
+      toast.error(
+        "Oops, We are facing some issues while creating your profile ...!!!"
+      );
     }
   };
 
@@ -184,6 +192,8 @@ function AuthProvider({ children }) {
     window.localStorage.removeItem("accessToken");
     window.localStorage.removeItem("userData");
     dispatch({ type: "LOGOUT" });
+
+    toast.success("User has been logged out successfully ...!!!");
   };
 
   return (
