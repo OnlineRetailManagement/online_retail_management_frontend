@@ -90,7 +90,7 @@ const TableBodyContent = (data) => {
             </TableCell>
 
             <TableCell colSpan={1} className="h-24">
-              {product?.titleDescription ?? "-"}
+              {product?.description ?? "-"}
             </TableCell>
 
             <TableCell colSpan={1} className="h-24">
@@ -98,20 +98,20 @@ const TableBodyContent = (data) => {
             </TableCell>
 
             <TableCell colSpan={1} className="h-24">
-              <span className="line-through">{product?.actualPrice}</span>
+              <span className="line-through">{product?.actual_price}</span>
               <span> </span>
               <span className="font-bold text-base">
-                {product?.discountedPrice}
+                {product?.discounted_price}
               </span>{" "}
               EUR
             </TableCell>
 
             <TableCell colSpan={1} className="h-24">
-              {product?.totalQuantity ?? "-"}
+              {product?.total_quantity ?? "-"}
             </TableCell>
 
             <TableCell colSpan={1} className="h-24">
-              {product?.availableQuantity ?? "-"}
+              {product?.available_quantity ?? "-"}
             </TableCell>
           </TableRow>
         );
