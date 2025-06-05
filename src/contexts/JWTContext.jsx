@@ -138,6 +138,10 @@ function AuthProvider({ children }) {
           userRole: normaliseUserRole(rest?.role[0]?.authority),
         })
       );
+      localStorage.setItem(
+        "userRole",
+        normaliseUserRole(rest?.role[0]?.authority)
+      );
 
       setSession(jwt);
       dispatch({
@@ -171,6 +175,10 @@ function AuthProvider({ children }) {
           userRole: normaliseUserRole(rest?.role[0]?.authority),
         })
       );
+      localStorage.setItem(
+        "userRole",
+        normaliseUserRole(rest?.role[0]?.authority)
+      );
 
       setSession(jwt);
       dispatch({
@@ -191,6 +199,7 @@ function AuthProvider({ children }) {
     setSession(null);
     window.localStorage.removeItem("accessToken");
     window.localStorage.removeItem("userData");
+    window.localStorage.removeItem("userRole");
     dispatch({ type: "LOGOUT" });
 
     toast.success("User has been logged out successfully ...!!!");

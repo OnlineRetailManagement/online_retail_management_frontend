@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 // libs
 import { Link } from "react-router-dom";
+// sonner-toast
+import { toast } from "sonner";
 //
 import { Loader2 } from "lucide-react";
 // @shadcn
@@ -38,7 +40,12 @@ export default function Login() {
 
     if (email?.length && password?.length) {
       setIsLoading(true);
-      await login(email, password);
+      try {
+        await login(email, password);
+      } catch (error) {
+        setIsLoading(false);
+        toast.error("Oops, Invalid credentials ...!!!");
+      }
     }
   };
 

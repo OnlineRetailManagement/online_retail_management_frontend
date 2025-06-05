@@ -13,6 +13,9 @@ import {
   TableHead,
   TableBody,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { VENDOR_PATHS } from "../../../routes/paths";
 import useAuth from "../../../hooks/useAuth";
 
 // ----------------------------------------
@@ -42,21 +45,23 @@ export default function Products() {
 
   return (
     <div className="border-t">
-      <div className="rounded-2xl p-2 pt-6 mt-4">
+      <div className="rounded-2xl p-2 pt-6 mt-2">
+        <div className="flex justify-end mb-4">
+          <Button asChild>
+            <Link to={VENDOR_PATHS.addProducts}>Add Products</Link>
+          </Button>
+        </div>
+
         <Table className="border rounded-2xl">
           <TableHeader className="sticky top-0 z-10 bg-muted">
             <TableRow>
+              <TableHead colSpan={1}>Product</TableHead>
+
               <TableHead colSpan={1}>Title</TableHead>
 
               <TableHead colSpan={1}>Description</TableHead>
 
-              <TableHead colSpan={1}>Category</TableHead>
-
-              <TableHead colSpan={1}>Price</TableHead>
-
-              <TableHead colSpan={1}>Total Quantity</TableHead>
-
-              <TableHead colSpan={1}>Available Quantity</TableHead>
+              <TableHead colSpan={1}>Order</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -82,36 +87,23 @@ const TableBodyContent = (data) => {
 
   return (
     <>
-      {products?.map((product, id) => {
+      {products?.map((products, id) => {
         return (
           <TableRow key={`products-${id}`}>
-            <TableCell colSpan={1} className="h-24">
-              {product?.title ?? "-"}
+            <TableCell colSpan={1} className="h-24 text-center">
+              {products?.firstName && "-"}
             </TableCell>
 
-            <TableCell colSpan={1} className="h-24">
-              {product?.description ?? "-"}
+            <TableCell colSpan={1} className="h-24 text-center">
+              {products?.lastName && "-"}
             </TableCell>
 
-            <TableCell colSpan={1} className="h-24">
-              {product?.category ?? "-"}
+            <TableCell colSpan={1} className="h-24 text-center">
+              {products?.email ?? "-"}
             </TableCell>
 
-            <TableCell colSpan={1} className="h-24">
-              <span className="line-through">{product?.actual_price}</span>
-              <span> </span>
-              <span className="font-bold text-base">
-                {product?.discounted_price}
-              </span>{" "}
-              EUR
-            </TableCell>
-
-            <TableCell colSpan={1} className="h-24">
-              {product?.total_quantity ?? "-"}
-            </TableCell>
-
-            <TableCell colSpan={1} className="h-24">
-              {product?.available_quantity ?? "-"}
+            <TableCell colSpan={1} className="h-24 text-center">
+              {products?.location ?? "-"}
             </TableCell>
           </TableRow>
         );
