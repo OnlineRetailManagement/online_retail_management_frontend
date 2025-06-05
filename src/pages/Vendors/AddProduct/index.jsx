@@ -1,6 +1,6 @@
 //
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 // shadcn
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -12,8 +12,14 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { Images } from "lucide-react";
 // auth
 import useAuth from "../../../hooks/useAuth";
+// redux
+import { useDispatch, useSelector } from "../../../redux/store";
+import { uploadAttachment } from "../../../redux/slices/attachments";
+// slice
+import { createProduct } from "../../../redux/slices/products";
 
 // ----------------------------------------
 
@@ -58,6 +64,29 @@ const producCategories = [
 
 export default function index() {
   const { user } = useAuth();
+  const dispatch = useDispatch();
+
+  const { isLoading, error, attachment } = useSelector(
+    (state) => state.attachments
+  );
+  const { product } = useSelector((state) => state.attachments);
+
+  const [attachmentsArray, setAttachmentsArray] = useState([]);
+
+  useEffect(() => {
+    if (!isLoading && !error && attachment?.id) {
+      setAttachmentsArray([...attachmentsArray, attachment]);
+    }
+  }, [attachment]);
+
+  const uploadImage = (file) => {
+    const formData = new FormData();
+
+    formData.append("user_id", user?.user?.id);
+    formData.append("file", file.target.files[0]);
+
+    dispatch(uploadAttachment(formData));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,6 +96,7 @@ export default function index() {
     const payload = {
       title: elements.get("title"),
       title_description: elements.get("title_description"),
+      // add description ...
       category: elements.get("category"),
       actual_price: elements.get("actual_price"),
       discounted_price: elements.get("discounted_price"),
@@ -77,10 +107,12 @@ export default function index() {
       sold_quantity: elements.get("sold_quantity"),
       delivery_time: elements.get("delivery_time"),
       owned_by: user?.user?.id,
-      attachment_ids: [],
+      attachment_ids: attachmentsArray?.map((el) => el.id) ?? [],
     };
 
     console.log(payload);
+
+    dispatch(createProduct(payload));
   };
 
   return (
@@ -231,6 +263,26 @@ export default function index() {
                 placeholder="Estimated Delivery Time"
                 required
               />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="images">Products Images</Label>
+
+              <div className="grid gap-2">
+                {attachmentsArray.map((img) => {
+                  return (
+                    <div
+                      key={`attachment-${img.id}`}
+                      className="flex gap-2 text-center m-2 p-2 border rounded-md"
+                    >
+                      <Images size={18} />
+                      <p>{img.path}</p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <Input id="images" type="file" onChange={uploadImage} />
             </div>
 
             <div className="grid gap-2">
