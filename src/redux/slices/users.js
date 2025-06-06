@@ -50,7 +50,7 @@ export function getUsers(payload) {
         params: payload,
       });
 
-      dispatch(slice.actions.getUsersSuccess(response.data?.data?.users ?? []));
+      dispatch(slice.actions.getUsersSuccess(response.data?.data ?? {}));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }

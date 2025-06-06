@@ -66,7 +66,7 @@ export function getProducts(payload) {
         params: payload,
       });
 
-      dispatch(slice.actions.getProductsSuccess(response.data?.data ?? []));
+      dispatch(slice.actions.getProductsSuccess(response.data?.data ?? {}));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
@@ -79,7 +79,7 @@ export function createProduct(payload) {
     try {
       const response = await axios.post("/admin/products", payload);
 
-      dispatch(slice.actions.createProductSuccess(response.data?.data ?? []));
+      dispatch(slice.actions.createProductSuccess(response.data?.data ?? {}));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
