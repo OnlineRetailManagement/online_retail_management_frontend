@@ -58,11 +58,11 @@ export default slice.reducer;
 
 // ----------------------------------------
 
-export function getProducts(payload) {
+export function getProducts(payload, userRole) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get("/admin/products", {
+      const response = await axios.get(`/${userRole}/products`, {
         params: payload,
       });
 
