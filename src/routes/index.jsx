@@ -13,7 +13,6 @@ import RoleBasedGuard from "../guards/RoleBasedGuard";
 import NavBarLayout from "../layouts/NavBarLayout";
 // @users
 import UsersDashboard from "../pages/Users/Dashboard";
-import Profile from "../pages/Users/Profile";
 // @vendors
 import VendorsDashboard from "../pages/Vendors/Dashboard";
 import VendorsProducts from "../pages/Vendors/Products";
@@ -23,7 +22,8 @@ import AdminsDashboard from "../pages/Admin/Dashboard";
 import AdminsProducts from "../pages/Admin/Products";
 import AdminsUsers from "../pages/Admin/Users";
 import AdminsVendors from "../pages/Admin/Vendors";
-import AdminsProfile from "../pages/Admin/Profile";
+// common
+import Profile from "../pages/common/Profile";
 
 // ----------------------------------------
 
@@ -99,6 +99,10 @@ export default function Router() {
           path: "add-products",
           element: <VendorsAddProducts />,
         },
+        {
+          path: "profile",
+          element: <Profile />,
+        },
       ],
     },
 
@@ -129,7 +133,7 @@ export default function Router() {
         },
         {
           path: "profile",
-          element: <AdminsProfile />,
+          element: <Profile />,
         },
       ],
     },

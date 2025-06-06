@@ -227,7 +227,17 @@ const NavUser = (props) => {
 
   return (
     <SidebarMenu>
-      <Link to={ADMIN_PATHS.profile}>
+      <Link
+        to={
+          user?.userRole === "admin"
+            ? ADMIN_PATHS.profile
+            : user?.userRole === "vendor"
+            ? VENDOR_PATHS.profile
+            : user?.userRole === "user"
+            ? USER_PATHS.profile
+            : null
+        }
+      >
         <SidebarMenuButton
           size="lg"
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"

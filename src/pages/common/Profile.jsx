@@ -14,10 +14,10 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 // auth
-import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 // redux
-import { useDispatch } from "../../../redux/store";
-import { updateProfile } from "../../../redux/slices/profile";
+import { useDispatch } from "../../redux/store";
+import { updateProfile } from "../../redux/slices/profile";
 
 // ----------------------------------------
 
