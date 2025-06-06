@@ -1,6 +1,7 @@
 //
 
 import React from "react";
+import { toast } from "sonner";
 // shadcn
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,9 @@ import {
 } from "@/components/ui/select";
 // auth
 import useAuth from "../../../hooks/useAuth";
+// redux
+import { useDispatch } from "../../../redux/store";
+import { updateProfile } from "../../../redux/slices/profile";
 
 // ----------------------------------------
 
@@ -33,8 +37,10 @@ const genderRole = [
 ];
 
 export default function Profile() {
+  const dispatch = useDispatch();
   const { user } = useAuth();
 
+  // TODO: integrate get profile api and show it here
   if (false) {
     return (
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -48,17 +54,32 @@ export default function Profile() {
     );
   }
 
-  console.log(user?.user);
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const elements = new FormData(e.currentTarget);
 
+    const { password: _, userData } = user?.user;
+
     const payload = {
+      ...userData,
       firstName: elements.get("first_name"),
       lastName: elements.get("last_name"),
+      email: elements.get("email"),
+      userLanguage: elements.get("language"),
+      location: elements.get("location"),
+      age: elements.get("age"),
+      dateOfBirth: elements.get("date_of_birth"),
+      gender: elements.get("gender"),
     };
+
+    try {
+      dispatch(updateProfile(payload));
+
+      toast.success("Profile updated successfully ...!");
+    } catch (error) {
+      toast.success("Oops, error while updating profile ...!");
+    }
   };
 
   return (
