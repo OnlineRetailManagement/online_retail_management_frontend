@@ -4,6 +4,6 @@ import React from "react";
 
 // ----------------------------------------
 
-export default function Dashboard() {
-  return <div>Users: Dashboard</div>;
+export default function Carts() {
+  return <div>User: cart</div>;
 }
