@@ -38,6 +38,7 @@ import {
   Frame,
   CirclePower,
   ShoppingCart,
+  ShoppingBasket,
 } from "lucide-react";
 
 // ----------------------------------------
@@ -100,9 +101,14 @@ const userPaths = {
       icon: PackageSearch,
     },
     {
+      name: "cart",
+      url: USER_PATHS.cart,
+      icon: ShoppingCart,
+    },
+    {
       name: "orders",
       url: USER_PATHS.orders,
-      icon: ShoppingCart,
+      icon: ShoppingBasket,
     },
   ],
 };
@@ -156,7 +162,7 @@ export default function NavBarLayout() {
         </SidebarContent>
 
         <SidebarFooter>
-          <NavUser user={user} />
+          <NavUser user={user} userRole={userRole} />
         </SidebarFooter>
 
         <SidebarRail />
@@ -223,17 +229,17 @@ const NavMain = (props) => {
 // ----------------------------------------
 
 const NavUser = (props) => {
-  const { user } = props;
+  const { user, userRole } = props;
 
   return (
     <SidebarMenu>
       <Link
         to={
-          user?.userRole === "admin"
+          userRole === "admin"
             ? ADMIN_PATHS.profile
-            : user?.userRole === "vendor"
+            : userRole === "vendor"
             ? VENDOR_PATHS.profile
-            : user?.userRole === "user"
+            : userRole === "user"
             ? USER_PATHS.profile
             : null
         }

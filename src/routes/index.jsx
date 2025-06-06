@@ -13,6 +13,9 @@ import RoleBasedGuard from "../guards/RoleBasedGuard";
 import NavBarLayout from "../layouts/NavBarLayout";
 // @users
 import UsersDashboard from "../pages/Users/Dashboard";
+import UsersProducts from "../pages/Users/Products";
+import UsersOrders from "../pages/Users/Orders";
+import UsersCart from "../pages/Users/Cart";
 // @vendors
 import VendorsDashboard from "../pages/Vendors/Dashboard";
 import VendorsProducts from "../pages/Vendors/Products";
@@ -70,6 +73,18 @@ export default function Router() {
         {
           path: "dashboard",
           element: <UsersDashboard />,
+        },
+        {
+          path: "products",
+          element: <UsersProducts />,
+        },
+        {
+          path: "orders",
+          element: <UsersOrders />,
+        },
+        {
+          path: "cart",
+          element: <UsersCart />,
         },
         {
           path: "profile",
