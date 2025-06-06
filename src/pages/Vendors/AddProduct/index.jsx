@@ -1,6 +1,8 @@
 //
 
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 // shadcn
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -20,6 +22,8 @@ import { useDispatch, useSelector } from "../../../redux/store";
 import { uploadAttachment } from "../../../redux/slices/attachments";
 // slice
 import { createProduct } from "../../../redux/slices/products";
+// paths
+import { VENDOR_PATHS } from "../../../routes/paths";
 
 // ----------------------------------------
 
@@ -63,13 +67,19 @@ const producCategories = [
 ];
 
 export default function index() {
-  const { user } = useAuth();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { user } = useAuth();
 
   const { isLoading, error, attachment } = useSelector(
     (state) => state.attachments
   );
-  const { product } = useSelector((state) => state.attachments);
+  const {
+    isLoading: isProductLoading,
+    product,
+    isCreatedSuccess,
+  } = useSelector((state) => state.products);
 
   const [attachmentsArray, setAttachmentsArray] = useState([]);
 
@@ -78,6 +88,14 @@ export default function index() {
       setAttachmentsArray([...attachmentsArray, attachment]);
     }
   }, [attachment]);
+
+  useEffect(() => {
+    if (isCreatedSuccess && product?.id) {
+      toast.success("The Product is Created Successfully ...!!!");
+      // navigate to products page ...
+      navigate(VENDOR_PATHS.products);
+    }
+  }, [isCreatedSuccess]);
 
   const uploadImage = (file) => {
     const formData = new FormData();
@@ -95,8 +113,8 @@ export default function index() {
 
     const payload = {
       title: elements.get("title"),
+      description: elements.get("description"),
       title_description: elements.get("title_description"),
-      // add description ...
       category: elements.get("category"),
       actual_price: elements.get("actual_price"),
       discounted_price: elements.get("discounted_price"),
@@ -109,8 +127,6 @@ export default function index() {
       owned_by: user?.user?.id,
       attachment_ids: attachmentsArray?.map((el) => el.id) ?? [],
     };
-
-    console.log(payload);
 
     dispatch(createProduct(payload));
   };
@@ -133,7 +149,17 @@ export default function index() {
                 name="title"
                 placeholder="Add the Title of Product"
                 required
-                defaultValue="Samsung Mobile"
+              />
+            </div>
+
+            {/* description */}
+            <div className="grid gap-2">
+              <Label htmlFor="description">Description</Label>
+              <Input
+                id="description"
+                name="description"
+                placeholder="Production Description"
+                required
               />
             </div>
 
@@ -144,7 +170,7 @@ export default function index() {
                 id="title_description"
                 type="title_description"
                 name="title_description"
-                placeholder="Add the Description of Product"
+                placeholder="Add the Brief Description of Product"
                 required
               />
             </div>
@@ -265,6 +291,7 @@ export default function index() {
               />
             </div>
 
+            {/* attachments */}
             <div className="grid gap-2">
               <Label htmlFor="images">Products Images</Label>
 
@@ -287,10 +314,12 @@ export default function index() {
 
             <div className="grid gap-2">
               <Button type="submit" className="w-full" disabled={false}>
-                {false && <Loader2 className="animate-spin" />}
-                {false ? "Please Wait ..." : "Create Product"}
+                {isProductLoading && <Loader2 className="animate-spin" />}
+                {isProductLoading ? "Please Wait ..." : "Create Product"}
               </Button>
             </div>
+
+            <div className="mb-8" />
           </div>
         </form>
       </div>

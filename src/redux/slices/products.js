@@ -39,6 +39,7 @@ const slice = createSlice({
     },
 
     startCreating(state) {
+      state.isLoading = true;
       state.isCreatedSuccess = false;
       state.product = {};
     },
