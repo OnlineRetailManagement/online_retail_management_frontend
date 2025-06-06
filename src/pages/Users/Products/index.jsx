@@ -7,6 +7,7 @@ import useAuth from "../../../hooks/useAuth";
 import { useDispatch, useSelector } from "../../../redux/store";
 // action
 import { getProducts } from "../../../redux/slices/products";
+import { addToCart } from "../../../redux/slices/cart";
 // shadcn
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,7 @@ import { ShoppingCart, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 export default function Products() {
   const dispatch = useDispatch();
-  const { userRole } = useAuth();
+  const { user, userRole } = useAuth();
 
   const [page, setPage] = useState(1);
 
@@ -26,6 +27,18 @@ export default function Products() {
   useEffect(() => {
     dispatch(getProducts({ offset: 0, limit: 12 }, userRole));
   }, [dispatch]);
+
+  const handleAddToCart = (productId) => {
+    const payload = {
+      userid: user?.user?.id,
+      // user_id: user?.user?.id,
+      productid: productId,
+      quantity: 1,
+      // createdat: new Date(),
+    };
+
+    dispatch(addToCart(payload));
+  };
 
   const goToPreviousPage = (currentPage) => {
     dispatch(
@@ -100,9 +113,11 @@ export default function Products() {
                       variant="secondary"
                       size="icon"
                       className="size-8 cursor-pointer"
+                      onClick={() => handleAddToCart(product.id)}
                     >
                       <ShoppingCart />
                     </Button>
+
                     <Button size="sm" className="cursor-pointer">
                       Buy Now
                     </Button>
@@ -114,6 +129,7 @@ export default function Products() {
         })}
       </div>
 
+      {/* footer section ... */}
       <div className="ml-auto flex justify-center mt-4 mr-3 items-center gap-4 lg:ml-0">
         <Button
           variant="outline"
