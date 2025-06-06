@@ -6,6 +6,7 @@ import storage from "redux-persist/lib/storage";
 import usersReducer from "./slices/users";
 import productsReducer from "./slices/products";
 import attachmentsReducer from "./slices/attachments";
+import profilesReducer from "./slices/profile";
 
 // ----------------------------------------
 
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   users: usersReducer,
   products: productsReducer,
   attachments: attachmentsReducer,
+  profile: profilesReducer,
 });
 
 export { rootPersistConfig, rootReducer };
