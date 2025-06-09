@@ -25,7 +25,9 @@ export default function Products() {
   const { isLoading, products } = useSelector((state) => state.products);
 
   useEffect(() => {
-    dispatch(getProducts({ offset: 0, limit: 12 }, userRole));
+    dispatch(
+      getProducts({ offset: 0, limit: 12, user_id: user?.user?.id }, userRole)
+    );
   }, [dispatch]);
 
   const handleAddToCart = (productId) => {

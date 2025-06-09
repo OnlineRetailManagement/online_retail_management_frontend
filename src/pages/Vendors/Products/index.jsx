@@ -22,12 +22,14 @@ import useAuth from "../../../hooks/useAuth";
 
 export default function Products() {
   const dispatch = useDispatch();
-  const { userRole } = useAuth();
+  const { user, userRole } = useAuth();
 
   const { isLoading, products } = useSelector((state) => state.products);
 
   useEffect(() => {
-    dispatch(getProducts({ offset: 0, limit: 10 }, userRole));
+    dispatch(
+      getProducts({ offset: 0, limit: 10, user_id: user?.user?.id }, userRole)
+    );
   }, [dispatch]);
 
   if (isLoading) {
