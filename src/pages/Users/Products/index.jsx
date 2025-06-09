@@ -7,6 +7,7 @@ import useAuth from "../../../hooks/useAuth";
 import { useDispatch, useSelector } from "../../../redux/store";
 // action
 import { getProducts } from "../../../redux/slices/products";
+import { addToCart } from "../../../redux/slices/cart";
 // shadcn
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,15 +18,27 @@ import { ShoppingCart, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 export default function Products() {
   const dispatch = useDispatch();
-  const { userRole } = useAuth();
+  const { user, userRole } = useAuth();
 
   const [page, setPage] = useState(1);
 
   const { isLoading, products } = useSelector((state) => state.products);
 
   useEffect(() => {
-    dispatch(getProducts({ offset: 0, limit: 12 }, userRole));
+    dispatch(
+      getProducts({ offset: 0, limit: 12, user_id: user?.user?.id }, userRole)
+    );
   }, [dispatch]);
+
+  const handleAddToCart = (productId) => {
+    const payload = {
+      user_id: user?.user?.id,
+      product_id: productId,
+      quantity: 1,
+    };
+
+    dispatch(addToCart(payload));
+  };
 
   const goToPreviousPage = (currentPage) => {
     dispatch(
@@ -69,7 +82,11 @@ export default function Products() {
             >
               <CardHeader>
                 <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP2_fg-TaBTO6NqpgNyBO_PFUwoE-sV347wQ&s"
+                  src={
+                    product?.attachments[0]?.attachment_path
+                      ? "file://" + product?.attachments[0]?.attachment_path
+                      : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP2_fg-TaBTO6NqpgNyBO_PFUwoE-sV347wQ&s"
+                  }
                   alt="Product"
                   className="w-full h-40 object-cover rounded-lg"
                 />
@@ -100,9 +117,11 @@ export default function Products() {
                       variant="secondary"
                       size="icon"
                       className="size-8 cursor-pointer"
+                      onClick={() => handleAddToCart(product.id)}
                     >
                       <ShoppingCart />
                     </Button>
+
                     <Button size="sm" className="cursor-pointer">
                       Buy Now
                     </Button>
@@ -114,6 +133,7 @@ export default function Products() {
         })}
       </div>
 
+      {/* footer section ... */}
       <div className="ml-auto flex justify-center mt-4 mr-3 items-center gap-4 lg:ml-0">
         <Button
           variant="outline"

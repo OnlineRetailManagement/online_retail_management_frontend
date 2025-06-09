@@ -14,7 +14,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Images } from "lucide-react";
+import { Images, Loader2 } from "lucide-react";
 // auth
 import useAuth from "../../../hooks/useAuth";
 // redux
@@ -70,7 +70,7 @@ export default function index() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { user } = useAuth();
+  const { user, userRole } = useAuth();
 
   const { isLoading, error, attachment } = useSelector(
     (state) => state.attachments
@@ -128,7 +128,7 @@ export default function index() {
       attachment_ids: attachmentsArray?.map((el) => el.id) ?? [],
     };
 
-    dispatch(createProduct(payload));
+    dispatch(createProduct(payload, userRole));
   };
 
   return (

@@ -158,8 +158,8 @@ function AuthProvider({ children }) {
     const response = await axios.post("/public/signup", {
       email,
       password,
-      firstName,
-      lastName,
+      first_name: firstName,
+      last_name: lastName,
       role,
     });
 
