@@ -13,6 +13,9 @@ const initialState = {
   isLoading: false,
   error: null,
   cart: {},
+
+  isUpdateLoading: false,
+  isUpdateQntSuccess: false,
 };
 
 const slice = createSlice({
@@ -30,6 +33,8 @@ const slice = createSlice({
     hasError(state, action) {
       state.isLoading = false;
       state.error = action.payload;
+      state.isUpdateLoading = false;
+      state.isUpdateQntSuccess = false;
     },
 
     // GET CART RECORDS
@@ -43,6 +48,17 @@ const slice = createSlice({
       state.isLoading = false;
       state.cart = action.payload;
       state.error = null;
+    },
+
+    // UPDATE CART QUANTITY
+    startUpdateLoading(state, action) {
+      state.isUpdateLoading = true;
+      state.isUpdateQntSuccess = false;
+    },
+
+    updateCartQuantitySuccess(state, action) {
+      state.isUpdateLoading = false;
+      state.isUpdateQntSuccess = true;
     },
   },
 });
@@ -76,6 +92,25 @@ export function addToCart(payload) {
     } catch (error) {
       dispatch(slice.actions.hasError(error));
       toast.error("Oops, something went wrong while adding to cart ...!");
+    }
+  };
+}
+
+export function updateCartQuantity(payload, cartId) {
+  return async () => {
+    dispatch(slice.actions.startUpdateLoading());
+    try {
+      const response = await axios.put(`/user/cart/${cartId}`, payload);
+
+      dispatch(
+        slice.actions.updateCartQuantitySuccess(response.data?.data ?? {})
+      );
+      toast.success("Quantity updated successfully ...!");
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      toast.error(
+        "Oops, something went wrong updating the quantity of cart ...!"
+      );
     }
   };
 }

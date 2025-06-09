@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "../../../redux/store";
 // auth
 import useAuth from "../../../hooks/useAuth";
 // redux
-import { getCartRecord } from "../../../redux/slices/cart";
+import { getCartRecord, updateCartQuantity } from "../../../redux/slices/cart";
 
 // ----------------------------------------
 
@@ -29,24 +29,25 @@ export default function Carts() {
 
   const { user } = useAuth();
 
-  const { isLoading, cart } = useSelector((state) => state.cart);
+  const { /* isLoading,*/ cart, isUpdateQntSuccess } = useSelector(
+    (state) => state.cart
+  );
 
   useEffect(() => {
     dispatch(getCartRecord(user?.user?.id));
   }, [dispatch]);
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          <div className="aspect-video rounded-xl bg-muted/50" />
-          <div className="aspect-video rounded-xl bg-muted/50" />
-          <div className="aspect-video rounded-xl bg-muted/50" />
-        </div>
-        <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (isUpdateQntSuccess) {
+      dispatch(getCartRecord(user?.user?.id));
+    }
+  }, [isUpdateQntSuccess]);
+
+  const handleQuantityUpdate = (quant, cartId) => {
+    const payload = { quantity: quant };
+
+    dispatch(updateCartQuantity(payload, cartId));
+  };
 
   return (
     <>
@@ -78,12 +79,17 @@ export default function Carts() {
 
                       <div className="grid gap-1 mt-3">
                         <Label htmlFor="quantity">Quantity</Label>
-                        <Select name="quantity" id="quantity">
+                        <Select
+                          name="quantity"
+                          id="quantity"
+                          onValueChange={(qty) =>
+                            handleQuantityUpdate(qty, crt?.id)
+                          }
+                        >
                           <SelectTrigger id="rows-per-page">
                             <SelectValue placeholder={crt?.quantity} />
                           </SelectTrigger>
 
-                          {/* TODO: PENDING: update quantity ... */}
                           <SelectContent side="top">
                             {[1, 2, 3, 4, 5].map((count) => (
                               <SelectItem
@@ -137,7 +143,7 @@ const CartSummary = (data) => {
       <div className="flex">
         <div className="flex basis-6/8">
           <p className="text-gray-900 text-sm">
-            {cartData[0]?.product?.delivery_time}
+            {cartData?.length && cartData[0]?.product?.delivery_time}
           </p>
         </div>
 
