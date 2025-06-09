@@ -231,30 +231,33 @@ const NavMain = (props) => {
 const NavUser = (props) => {
   const { user, userRole } = props;
 
+  const userNameInitials = user?.user?.first_name
+    ? user?.user?.first_name?.charAt(0) + user?.user?.last_name?.charAt(0)
+    : "NU";
+
+  const userName = user?.user?.first_name + " " + user?.user?.last_name;
+
+  const redirectToPath =
+    userRole === "admin"
+      ? ADMIN_PATHS.profile
+      : userRole === "vendor"
+      ? VENDOR_PATHS.profile
+      : userRole === "user"
+      ? USER_PATHS.profile
+      : null;
+
   return (
     <SidebarMenu>
-      <Link
-        to={
-          userRole === "admin"
-            ? ADMIN_PATHS.profile
-            : userRole === "vendor"
-            ? VENDOR_PATHS.profile
-            : userRole === "user"
-            ? USER_PATHS.profile
-            : null
-        }
-      >
+      <Link to={redirectToPath}>
         <SidebarMenuButton
           size="lg"
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
           <Avatar className="h-8 w-8 rounded-lg flex items-center justify-center border">
-            {user?.name ?? "NU"}
+            {userNameInitials}
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">
-              {user?.user?.firstName ?? "" + " " + user?.user?.lastName ?? ""}
-            </span>
+            <span className="truncate font-semibold">{userName}</span>
             <span className="truncate text-xs">{user?.email ?? "-"}</span>
           </div>
         </SidebarMenuButton>
