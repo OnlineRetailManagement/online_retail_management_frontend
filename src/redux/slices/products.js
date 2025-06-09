@@ -73,11 +73,11 @@ export function getProducts(payload, userRole) {
   };
 }
 
-export function createProduct(payload) {
+export function createProduct(payload, userRole) {
   return async () => {
     dispatch(slice.actions.startCreating());
     try {
-      const response = await axios.post("/admin/products", payload);
+      const response = await axios.post(`/${userRole}/products`, payload);
 
       dispatch(slice.actions.createProductSuccess(response.data?.data ?? {}));
     } catch (error) {
