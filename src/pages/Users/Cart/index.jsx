@@ -156,6 +156,10 @@ const CartSummary = (data) => {
           </p>
         </div>
       </div>
+
+      <div className="flex justify-end mt-3">
+        <Button>Pay and Checkout</Button>
+      </div>
     </div>
   );
 };
