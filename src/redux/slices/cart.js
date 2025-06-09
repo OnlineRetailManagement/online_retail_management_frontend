@@ -16,6 +16,8 @@ const initialState = {
 
   isUpdateLoading: false,
   isUpdateQntSuccess: false,
+
+  isDeletionSuccess: false,
 };
 
 const slice = createSlice({
@@ -54,11 +56,16 @@ const slice = createSlice({
     startUpdateLoading(state, action) {
       state.isUpdateLoading = true;
       state.isUpdateQntSuccess = false;
+      state.isDeletionSuccess = false;
     },
 
     updateCartQuantitySuccess(state, action) {
       state.isUpdateLoading = false;
       state.isUpdateQntSuccess = true;
+    },
+
+    deleteCartItemSuccess(state, action) {
+      state.isDeletionSuccess = true;
     },
   },
 });
@@ -68,6 +75,7 @@ export default slice.reducer;
 
 // ----------------------------------------
 
+// GET
 export function getCartRecord(userId) {
   return async () => {
     dispatch(slice.actions.startLoading());
@@ -81,6 +89,7 @@ export function getCartRecord(userId) {
   };
 }
 
+// POST
 export function addToCart(payload) {
   return async () => {
     dispatch(slice.actions.startLoading());
@@ -96,6 +105,7 @@ export function addToCart(payload) {
   };
 }
 
+// PUT
 export function updateCartQuantity(payload, cartId) {
   return async () => {
     dispatch(slice.actions.startUpdateLoading());
@@ -110,6 +120,24 @@ export function updateCartQuantity(payload, cartId) {
       dispatch(slice.actions.hasError(error));
       toast.error(
         "Oops, something went wrong updating the quantity of cart ...!"
+      );
+    }
+  };
+}
+
+// DELETE
+export function deleteCartItem(cartId) {
+  return async () => {
+    dispatch(slice.actions.startUpdateLoading());
+    try {
+      const response = await axios.delete(`/user/cart/${cartId}`);
+
+      dispatch(slice.actions.deleteCartItemSuccess(response.data?.data ?? {}));
+      toast.success("Item removed from cart successfully ...!");
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      toast.error(
+        "Oops, something went wrong while removing the cart item ...!"
       );
     }
   };

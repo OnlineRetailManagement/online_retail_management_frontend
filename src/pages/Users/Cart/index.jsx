@@ -1,10 +1,10 @@
 //
 
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 // radix
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-// import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -14,13 +14,19 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 // lucid-react
-import { Trash2 } from "lucide-react";
+import { Trash2, ArrowRight } from "lucide-react";
 // redux
 import { useDispatch, useSelector } from "../../../redux/store";
 // auth
 import useAuth from "../../../hooks/useAuth";
 // redux
-import { getCartRecord, updateCartQuantity } from "../../../redux/slices/cart";
+import {
+  deleteCartItem,
+  getCartRecord,
+  updateCartQuantity,
+} from "../../../redux/slices/cart";
+// paths
+import { USER_PATHS } from "../../../routes/paths";
 
 // ----------------------------------------
 
@@ -29,9 +35,8 @@ export default function Carts() {
 
   const { user } = useAuth();
 
-  const { /* isLoading,*/ cart, isUpdateQntSuccess } = useSelector(
-    (state) => state.cart
-  );
+  const { /* isLoading,*/ cart, isUpdateQntSuccess, isDeletionSuccess } =
+    useSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(getCartRecord(user?.user?.id));
@@ -43,10 +48,20 @@ export default function Carts() {
     }
   }, [isUpdateQntSuccess]);
 
+  useEffect(() => {
+    if (isDeletionSuccess) {
+      dispatch(getCartRecord(user?.user?.id));
+    }
+  }, [isDeletionSuccess]);
+
   const handleQuantityUpdate = (quant, cartId) => {
     const payload = { quantity: quant };
 
     dispatch(updateCartQuantity(payload, cartId));
+  };
+
+  const handleDeleteCartItem = (cartId) => {
+    dispatch(deleteCartItem(cartId));
   };
 
   return (
@@ -104,9 +119,8 @@ export default function Carts() {
                       </div>
                     </div>
 
-                    {/* TODO: DELETE: delete cart item ... */}
                     <div className="basis-1/10">
-                      <Button>
+                      <Button onClick={() => handleDeleteCartItem(crt.id)}>
                         <Trash2 />
                       </Button>
                     </div>
@@ -116,9 +130,25 @@ export default function Carts() {
             );
           })}
         </div>
+
+        {!cart?.data?.cart_items?.length ? (
+          <div className="flex justify-center text-center">
+            <div>
+              <p className="my-6">Add something to cart ...</p>
+
+              <Button className="flex items-center">
+                <Link to={USER_PATHS.products} className="flex items-center">
+                  Go to Products page &nbsp; &nbsp; <ArrowRight />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        ) : null}
       </div>
 
-      <CartSummary cartData={cart?.data?.cart_items} />
+      {cart?.data?.cart_items?.length ? (
+        <CartSummary cartData={cart?.data?.cart_items} />
+      ) : null}
     </>
   );
 }
