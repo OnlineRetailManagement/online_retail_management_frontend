@@ -32,11 +32,9 @@ export default function Products() {
 
   const handleAddToCart = (productId) => {
     const payload = {
-      userid: user?.user?.id,
-      // user_id: user?.user?.id,
-      productid: productId,
+      user_id: user?.user?.id,
+      product_id: productId,
       quantity: 1,
-      // createdat: new Date(),
     };
 
     dispatch(addToCart(payload));
@@ -84,7 +82,11 @@ export default function Products() {
             >
               <CardHeader>
                 <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP2_fg-TaBTO6NqpgNyBO_PFUwoE-sV347wQ&s"
+                  src={
+                    product?.attachments[0]?.attachment_path
+                      ? "file://" + product?.attachments[0]?.attachment_path
+                      : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP2_fg-TaBTO6NqpgNyBO_PFUwoE-sV347wQ&s"
+                  }
                   alt="Product"
                   className="w-full h-40 object-cover rounded-lg"
                 />
