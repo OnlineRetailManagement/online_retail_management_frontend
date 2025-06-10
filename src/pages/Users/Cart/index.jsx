@@ -35,7 +35,7 @@ export default function Carts() {
 
   const { user } = useAuth();
 
-  const { /* isLoading,*/ cart, isUpdateQntSuccess, isDeletionSuccess } =
+  const { isLoading, cart, isUpdateQntSuccess, isDeletionSuccess } =
     useSelector((state) => state.cart);
 
   useEffect(() => {
@@ -131,7 +131,7 @@ export default function Carts() {
           })}
         </div>
 
-        {!cart?.data?.cart_items?.length ? (
+        {!isLoading && !cart?.data?.cart_items?.length ? (
           <div className="flex justify-center text-center">
             <div>
               <p className="my-6">Add something to cart ...</p>
