@@ -1,6 +1,6 @@
 //
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 // shadcn
@@ -15,6 +15,13 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 // auth
 import useAuth from "../../hooks/useAuth";
 // redux
@@ -44,12 +51,13 @@ const genderRole = [
 ];
 
 export default function Profile() {
+  const closeRef = useRef(null);
   const dispatch = useDispatch();
   const { user } = useAuth();
 
   const {
-    isLoadingAdd,
-    addError,
+    // isLoadingAdd,
+    // addError,
     addresses,
     isAddedNewAddress,
     isDeletedAddress,
@@ -130,6 +138,11 @@ export default function Profile() {
     };
 
     dispatch(addUserAddress(payload));
+
+    // close the dialogue ...
+    if (closeRef.current) {
+      closeRef.current.click();
+    }
   };
 
   const handleDeleteAddress = (addressId) => {
@@ -280,9 +293,10 @@ export default function Profile() {
         <div className="flex justify-between rounded-2xl my-5 pt-2">
           <p className="font-bold">Manage Address</p>
 
-          <Button className="w-fit" disabled={false}>
-            + Add new address
-          </Button>
+          <AddNewAddress
+            handleNewAddressSubmit={handleNewAddressSubmit}
+            closeRef={closeRef}
+          />
         </div>
 
         <div className="flex flex-col gap-3">
@@ -321,91 +335,113 @@ export default function Profile() {
   );
 }
 
-// <form onSubmit={handleNewAddressSubmit}>
-//           <div className="grid gap-4">
-//             <div className="grid gap-1">
-//               <Label htmlFor="title">Street Line 01</Label>
-//               <Input
-//                 id="address_line1"
-//                 name="address_line1"
-//                 required
-//                 placeholder="Street Line 01"
-//                 defaultValue={data?.address_line1}
-//               />
-//             </div>
+const AddNewAddress = (data) => {
+  const { handleNewAddressSubmit, closeRef } = data;
 
-//             <div className="grid gap-1">
-//               <Label htmlFor="title">Street Line 02</Label>
-//               <Input
-//                 id="address_line2"
-//                 name="address_line2"
-//                 required
-//                 placeholder="Street Line 02"
-//                 defaultValue={data?.address_line2}
-//               />
-//             </div>
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button className="w-fit">+ Add new address</Button>
+      </DialogTrigger>
 
-//             <div className="grid gap-1">
-//               <div className="grid grid-flow-col gap-4">
-//                 <div className="grid gap-2">
-//                   <Label htmlFor="city">City</Label>
-//                   <Input
-//                     id="city"
-//                     name="city"
-//                     required
-//                     placeholder="Your City"
-//                     defaultValue={data?.city}
-//                   />
-//                 </div>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add New Address</DialogTitle>
+        </DialogHeader>
 
-//                 <div className="grid gap-2">
-//                   <Label htmlFor="zip_code">Zip Code</Label>
-//                   <Input
-//                     id="zip_code"
-//                     name="zip_code"
-//                     required
-//                     placeholder="Zip Code"
-//                     defaultValue={data?.zip_code}
-//                   />
-//                 </div>
+        <form onSubmit={handleNewAddressSubmit}>
+          <div className="grid gap-4 pt-3">
+            <div className="grid gap-1">
+              <Label htmlFor="title">Street Line 01</Label>
+              <Input
+                id="address_line1"
+                name="address_line1"
+                required
+                placeholder="Street Line 01"
+                defaultValue={data?.address_line1}
+              />
+            </div>
 
-//                 <div className="grid gap-2">
-//                   <Label htmlFor="country">Country</Label>
-//                   <Input
-//                     id="country"
-//                     name="country"
-//                     required
-//                     placeholder="Your Country"
-//                     defaultValue={data?.country}
-//                   />
-//                 </div>
-//               </div>
-//             </div>
+            <div className="grid gap-1">
+              <Label htmlFor="title">Street Line 02</Label>
+              <Input
+                id="address_line2"
+                name="address_line2"
+                required
+                placeholder="Street Line 02"
+                defaultValue={data?.address_line2}
+              />
+            </div>
 
-//             <div className="grid gap-1">
-//               <Label htmlFor="delivery_email">Delivery Email</Label>
-//               <Input
-//                 id="delivery_email"
-//                 name="delivery_email"
-//                 required
-//                 placeholder="Delivery Email"
-//                 defaultValue={data?.delivery_email}
-//               />
-//             </div>
+            <div className="grid gap-1">
+              <div className="grid grid-flow-col gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="city">City</Label>
+                  <Input
+                    id="city"
+                    name="city"
+                    required
+                    placeholder="Your City"
+                    defaultValue={data?.city}
+                  />
+                </div>
 
-//             <div className="grid gap-1">
-//               <Label htmlFor="description">Other Description</Label>
-//               <Input
-//                 id="description"
-//                 name="description"
-//                 required
-//                 placeholder="Other Description"
-//                 defaultValue={data?.description}
-//               />
-//             </div>
-//           </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="zip_code">Zip Code</Label>
+                  <Input
+                    id="zip_code"
+                    name="zip_code"
+                    required
+                    placeholder="Zip Code"
+                    defaultValue={data?.zip_code}
+                  />
+                </div>
 
-//           <div className="grid gap-2 mt-2">
-//
-//           </div>
-//         </form>
+                <div className="grid gap-2">
+                  <Label htmlFor="country">Country</Label>
+                  <Input
+                    id="country"
+                    name="country"
+                    required
+                    placeholder="Your Country"
+                    defaultValue={data?.country}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-1">
+              <Label htmlFor="delivery_email">Delivery Email</Label>
+              <Input
+                id="delivery_email"
+                name="delivery_email"
+                required
+                placeholder="Delivery Email"
+                defaultValue={data?.delivery_email}
+              />
+            </div>
+
+            <div className="grid gap-1">
+              <Label htmlFor="description">Other Description</Label>
+              <Input
+                id="description"
+                name="description"
+                required
+                placeholder="Other Description"
+                defaultValue={data?.description}
+              />
+            </div>
+
+            <div>
+              <Button type="submit">Save Address</Button>
+            </div>
+          </div>
+
+          <DialogTrigger asChild>
+            <button ref={closeRef} className="hidden" />
+          </DialogTrigger>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
