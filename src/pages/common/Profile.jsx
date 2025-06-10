@@ -1,6 +1,6 @@
 //
 
-import React from "react";
+import React, { useEffect } from "react";
 import { toast } from "sonner";
 // shadcn
 import { Label } from "@/components/ui/label";
@@ -16,8 +16,8 @@ import {
 // auth
 import useAuth from "../../hooks/useAuth";
 // redux
-import { useDispatch } from "../../redux/store";
-import { updateProfile } from "../../redux/slices/profile";
+import { useDispatch, useSelector } from "../../redux/store";
+import { addUserAddress, updateProfile } from "../../redux/slices/profile";
 
 // ----------------------------------------
 
@@ -39,6 +39,17 @@ const genderRole = [
 export default function Profile() {
   const dispatch = useDispatch();
   const { user } = useAuth();
+
+  const { isLoadingAdd, addError, addresses, isAddedNewAddress } = useSelector(
+    (state) => state.profile
+  );
+
+  useEffect(() => {
+    if (isAddedNewAddress) {
+      // TODO: GET NEW RECORDS
+      console.log("get new records ...");
+    }
+  }, [isAddedNewAddress]);
 
   // TODO: integrate get profile api and show it here
   if (false) {
@@ -81,6 +92,28 @@ export default function Profile() {
       toast.success("Oops, error while updating profile ...!");
     }
   };
+
+  const handleNewAddressSubmit = (e) => {
+    e.preventDefault();
+
+    const elements = new FormData(e.currentTarget);
+
+    const payload = {
+      address_line1: elements.get("address_line1"),
+      address_line2: elements.get("address_line2"),
+      city: elements.get("city"),
+      zip_code: Number(elements.get("zip_code")),
+      country: elements.get("country"),
+      delivery_email: elements.get("delivery_email"),
+      description: elements.get("description"),
+      user_id: user?.user?.id,
+    };
+
+    console.log(payload);
+    dispatch(addUserAddress(payload));
+  };
+
+  const data = {};
 
   return (
     <div>
@@ -223,9 +256,101 @@ export default function Profile() {
         </form>
 
         {/* address */}
-        <div className="rounded-2xl p-2 mt-4">
+        <div className="rounded-2xl my-5 pt-2">
           <p className="font-bold">Manage Address</p>
         </div>
+
+        <form onSubmit={handleNewAddressSubmit}>
+          <div className="grid gap-4">
+            <div className="grid gap-1">
+              <Label htmlFor="title">Street Line 01</Label>
+              <Input
+                id="address_line1"
+                name="address_line1"
+                required
+                placeholder="Street Line 01"
+                defaultValue={data?.address_line1}
+              />
+            </div>
+
+            <div className="grid gap-1">
+              <Label htmlFor="title">Street Line 02</Label>
+              <Input
+                id="address_line2"
+                name="address_line2"
+                required
+                placeholder="Street Line 02"
+                defaultValue={data?.address_line2}
+              />
+            </div>
+
+            <div className="grid gap-1">
+              <div className="grid grid-flow-col gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="city">City</Label>
+                  <Input
+                    id="city"
+                    name="city"
+                    required
+                    placeholder="Your City"
+                    defaultValue={data?.city}
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="zip_code">Zip Code</Label>
+                  <Input
+                    id="zip_code"
+                    name="zip_code"
+                    required
+                    placeholder="Zip Code"
+                    defaultValue={data?.zip_code}
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="country">Country</Label>
+                  <Input
+                    id="country"
+                    name="country"
+                    required
+                    placeholder="Your Country"
+                    defaultValue={data?.country}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-1">
+              <Label htmlFor="delivery_email">Delivery Email</Label>
+              <Input
+                id="delivery_email"
+                name="delivery_email"
+                required
+                placeholder="Delivery Email"
+                defaultValue={data?.delivery_email}
+              />
+            </div>
+
+            <div className="grid gap-1">
+              <Label htmlFor="description">Other Description</Label>
+              <Input
+                id="description"
+                name="description"
+                required
+                placeholder="Other Description"
+                defaultValue={data?.description}
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-2 mt-2">
+            <Button type="submit" className="w-fit" disabled={false}>
+              {false && <Loader2 className="animate-spin" />}
+              {false ? "Please Wait ..." : "Add new address"}
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );
