@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react";
 import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
 // shadcn
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -13,11 +14,17 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
 // auth
 import useAuth from "../../hooks/useAuth";
 // redux
 import { useDispatch, useSelector } from "../../redux/store";
-import { addUserAddress, updateProfile } from "../../redux/slices/profile";
+import {
+  addUserAddress,
+  deleteUserAddress,
+  getUserAddress,
+  updateProfile,
+} from "../../redux/slices/profile";
 
 // ----------------------------------------
 
@@ -40,16 +47,29 @@ export default function Profile() {
   const dispatch = useDispatch();
   const { user } = useAuth();
 
-  const { isLoadingAdd, addError, addresses, isAddedNewAddress } = useSelector(
-    (state) => state.profile
-  );
+  const {
+    isLoadingAdd,
+    addError,
+    addresses,
+    isAddedNewAddress,
+    isDeletedAddress,
+  } = useSelector((state) => state.profile);
+
+  useEffect(() => {
+    dispatch(getUserAddress(user?.user?.id));
+  }, [dispatch]);
 
   useEffect(() => {
     if (isAddedNewAddress) {
-      // TODO: GET NEW RECORDS
-      console.log("get new records ...");
+      dispatch(getUserAddress(user?.user?.id));
     }
   }, [isAddedNewAddress]);
+
+  useEffect(() => {
+    if (isDeletedAddress) {
+      dispatch(getUserAddress(user?.user?.id));
+    }
+  }, [isDeletedAddress]);
 
   // TODO: integrate get profile api and show it here
   if (false) {
@@ -109,11 +129,12 @@ export default function Profile() {
       user_id: user?.user?.id,
     };
 
-    console.log(payload);
     dispatch(addUserAddress(payload));
   };
 
-  const data = {};
+  const handleDeleteAddress = (addressId) => {
+    dispatch(deleteUserAddress(addressId));
+  };
 
   return (
     <div>
@@ -256,102 +277,135 @@ export default function Profile() {
         </form>
 
         {/* address */}
-        <div className="rounded-2xl my-5 pt-2">
+        <div className="flex justify-between rounded-2xl my-5 pt-2">
           <p className="font-bold">Manage Address</p>
+
+          <Button className="w-fit" disabled={false}>
+            + Add new address
+          </Button>
         </div>
 
-        <form onSubmit={handleNewAddressSubmit}>
-          <div className="grid gap-4">
-            <div className="grid gap-1">
-              <Label htmlFor="title">Street Line 01</Label>
-              <Input
-                id="address_line1"
-                name="address_line1"
-                required
-                placeholder="Street Line 01"
-                defaultValue={data?.address_line1}
-              />
-            </div>
+        <div className="flex flex-col gap-3">
+          {addresses?.map((add) => {
+            return (
+              <Card className="w-full" key={`cart-${add.id}`}>
+                <CardContent>
+                  <div className="flex">
+                    <div className="basis-8/10">
+                      <p>Address Line 01: {add.address_line1}</p>
+                      <p>Address Line 02: {add.address_line2}</p>
+                      <p>Zip Code: {add.zip_code}</p>
+                      <p>City: {add.city}</p>
+                      <p>Country: {add.country}</p>
+                      <p>Delivery Email: {add.delivery_email}</p>
+                      <p>Other Note: {add.description}</p>
+                    </div>
 
-            <div className="grid gap-1">
-              <Label htmlFor="title">Street Line 02</Label>
-              <Input
-                id="address_line2"
-                name="address_line2"
-                required
-                placeholder="Street Line 02"
-                defaultValue={data?.address_line2}
-              />
-            </div>
+                    <div className="basis-2/10">
+                      <div className="flex gap-2">
+                        <Button></Button>
 
-            <div className="grid gap-1">
-              <div className="grid grid-flow-col gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="city">City</Label>
-                  <Input
-                    id="city"
-                    name="city"
-                    required
-                    placeholder="Your City"
-                    defaultValue={data?.city}
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="zip_code">Zip Code</Label>
-                  <Input
-                    id="zip_code"
-                    name="zip_code"
-                    required
-                    placeholder="Zip Code"
-                    defaultValue={data?.zip_code}
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="country">Country</Label>
-                  <Input
-                    id="country"
-                    name="country"
-                    required
-                    placeholder="Your Country"
-                    defaultValue={data?.country}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="grid gap-1">
-              <Label htmlFor="delivery_email">Delivery Email</Label>
-              <Input
-                id="delivery_email"
-                name="delivery_email"
-                required
-                placeholder="Delivery Email"
-                defaultValue={data?.delivery_email}
-              />
-            </div>
-
-            <div className="grid gap-1">
-              <Label htmlFor="description">Other Description</Label>
-              <Input
-                id="description"
-                name="description"
-                required
-                placeholder="Other Description"
-                defaultValue={data?.description}
-              />
-            </div>
-          </div>
-
-          <div className="grid gap-2 mt-2">
-            <Button type="submit" className="w-fit" disabled={false}>
-              {false && <Loader2 className="animate-spin" />}
-              {false ? "Please Wait ..." : "Add new address"}
-            </Button>
-          </div>
-        </form>
+                        <Button onClick={() => handleDeleteAddress(add.id)}>
+                          <Trash2 />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 }
+
+// <form onSubmit={handleNewAddressSubmit}>
+//           <div className="grid gap-4">
+//             <div className="grid gap-1">
+//               <Label htmlFor="title">Street Line 01</Label>
+//               <Input
+//                 id="address_line1"
+//                 name="address_line1"
+//                 required
+//                 placeholder="Street Line 01"
+//                 defaultValue={data?.address_line1}
+//               />
+//             </div>
+
+//             <div className="grid gap-1">
+//               <Label htmlFor="title">Street Line 02</Label>
+//               <Input
+//                 id="address_line2"
+//                 name="address_line2"
+//                 required
+//                 placeholder="Street Line 02"
+//                 defaultValue={data?.address_line2}
+//               />
+//             </div>
+
+//             <div className="grid gap-1">
+//               <div className="grid grid-flow-col gap-4">
+//                 <div className="grid gap-2">
+//                   <Label htmlFor="city">City</Label>
+//                   <Input
+//                     id="city"
+//                     name="city"
+//                     required
+//                     placeholder="Your City"
+//                     defaultValue={data?.city}
+//                   />
+//                 </div>
+
+//                 <div className="grid gap-2">
+//                   <Label htmlFor="zip_code">Zip Code</Label>
+//                   <Input
+//                     id="zip_code"
+//                     name="zip_code"
+//                     required
+//                     placeholder="Zip Code"
+//                     defaultValue={data?.zip_code}
+//                   />
+//                 </div>
+
+//                 <div className="grid gap-2">
+//                   <Label htmlFor="country">Country</Label>
+//                   <Input
+//                     id="country"
+//                     name="country"
+//                     required
+//                     placeholder="Your Country"
+//                     defaultValue={data?.country}
+//                   />
+//                 </div>
+//               </div>
+//             </div>
+
+//             <div className="grid gap-1">
+//               <Label htmlFor="delivery_email">Delivery Email</Label>
+//               <Input
+//                 id="delivery_email"
+//                 name="delivery_email"
+//                 required
+//                 placeholder="Delivery Email"
+//                 defaultValue={data?.delivery_email}
+//               />
+//             </div>
+
+//             <div className="grid gap-1">
+//               <Label htmlFor="description">Other Description</Label>
+//               <Input
+//                 id="description"
+//                 name="description"
+//                 required
+//                 placeholder="Other Description"
+//                 defaultValue={data?.description}
+//               />
+//             </div>
+//           </div>
+
+//           <div className="grid gap-2 mt-2">
+//
+//           </div>
+//         </form>

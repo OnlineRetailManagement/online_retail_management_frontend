@@ -19,6 +19,7 @@ const initialState = {
   addError: null,
   isAddedNewAddress: false,
   addresses: [],
+  isDeletedAddress: false,
 };
 
 const slice = createSlice({
@@ -53,19 +54,31 @@ const slice = createSlice({
       state.addError = action.payload;
       state.addresses = [];
       state.isAddedNewAddress = false;
+      state.isDeletedAddress = false;
+    },
+
+    getUserAddressSuccess(state, action) {
+      state.isLoadingAdd = false;
+      state.addError = null;
+      state.addresses = action.payload;
     },
 
     addUserAddressSuccess(state, action) {
       state.isLoadingAdd = false;
       state.addError = null;
       state.isAddedNewAddress = true;
-      // state.addresses = action.payload;
+    },
+
+    deleteUserAddressSuccess(state, action) {
+      state.isLoadingAdd = false;
+      state.addError = null;
+      state.isDeletedAddress = true;
     },
 
     addUserAddressError(state, action) {
       state.isLoadingAdd = false;
       state.addError = action.payload;
-      // state.addresses = null;
+      state.addresses = [];
       state.isAddedNewAddress = false;
     },
   },
@@ -94,13 +107,15 @@ export function updateProfile(payload) {
 
 // ====== Address ===
 // GET
-export function getUserAddress(payload) {
+export function getUserAddress(userId) {
   return async () => {
     dispatch(slice.actions.startLoadingAddress());
     try {
-      const response = await axios.get("public/address", payload);
+      const response = await axios.get(`/public/address/${userId}`);
 
-      dispatch(slice.actions.getUserAddressSuccess(response.data));
+      dispatch(
+        slice.actions.getUserAddressSuccess(response?.data?.data?.addresses)
+      );
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
@@ -121,6 +136,24 @@ export function addUserAddress(payload) {
     } catch (error) {
       dispatch(slice.actions.addUserAddressError(error));
       toast.error("Oops, something went wrong while adding new address ...!");
+    }
+  };
+}
+
+// DELETE
+export function deleteUserAddress(addressId) {
+  return async () => {
+    dispatch(slice.actions.startLoadingAddress());
+    try {
+      const response = await axios.delete(`/public/address/${addressId}`);
+
+      dispatch(
+        slice.actions.deleteUserAddressSuccess(response?.data?.data?.addresses)
+      );
+      toast.success("Address has been deleted successfully ...!");
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      toast.success("Oops, something went wrong while deleting address ...!");
     }
   };
 }
