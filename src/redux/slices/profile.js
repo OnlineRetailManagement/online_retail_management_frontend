@@ -18,6 +18,7 @@ const initialState = {
   isLoadingAdd: false,
   addError: null,
   isAddedNewAddress: false,
+  isAddressUpdated: false,
   addresses: [],
   isDeletedAddress: false,
 };
@@ -55,6 +56,7 @@ const slice = createSlice({
       state.addresses = [];
       state.isAddedNewAddress = false;
       state.isDeletedAddress = false;
+      state.isAddressUpdated = false;
     },
 
     getUserAddressSuccess(state, action) {
@@ -67,6 +69,18 @@ const slice = createSlice({
       state.isLoadingAdd = false;
       state.addError = null;
       state.isAddedNewAddress = true;
+    },
+
+    updateUserAddressSuccess(state, action) {
+      state.isLoading = false;
+      state.isAddressUpdated = true;
+      state.addError = null;
+    },
+
+    updateUserAddressError(state, action) {
+      state.isLoading = false;
+      state.isAddressUpdated = false;
+      state.addError = action.payload;
     },
 
     deleteUserAddressSuccess(state, action) {
@@ -136,6 +150,24 @@ export function addUserAddress(payload) {
     } catch (error) {
       dispatch(slice.actions.addUserAddressError(error));
       toast.error("Oops, something went wrong while adding new address ...!");
+    }
+  };
+}
+
+// POST
+export function updateUserAddress(payload, addressId) {
+  return async () => {
+    dispatch(slice.actions.startLoadingAddress());
+    try {
+      const response = await axios.put(`/public/address/${addressId}`, payload);
+
+      if (response?.data?.data?.updated_address?.id) {
+        dispatch(slice.actions.updateUserAddressSuccess());
+        toast.success("Your Address has been updated successfully ...!");
+      }
+    } catch (error) {
+      dispatch(slice.actions.updateUserAddressError(error));
+      toast.error("Oops, something went wrong while updating address ...!");
     }
   };
 }
