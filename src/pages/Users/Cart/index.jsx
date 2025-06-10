@@ -27,6 +27,7 @@ import {
 } from "../../../redux/slices/cart";
 // paths
 import { USER_PATHS } from "../../../routes/paths";
+import { userCheckout } from "../../../redux/slices/checkout";
 
 // ----------------------------------------
 
@@ -37,6 +38,10 @@ export default function Carts() {
 
   const { isLoading, cart, isUpdateQntSuccess, isDeletionSuccess } =
     useSelector((state) => state.cart);
+
+  const { /*isLoading: isLoadingCheckOut,*/ checkoutResponse } = useSelector(
+    (state) => state.checkout
+  );
 
   useEffect(() => {
     dispatch(getCartRecord(user?.user?.id));
@@ -62,6 +67,20 @@ export default function Carts() {
 
   const handleDeleteCartItem = (cartId) => {
     dispatch(deleteCartItem(cartId));
+  };
+
+  const checkoutSubmit = () => {
+    const payload = {
+      user_id: user?.user?.id,
+      checkout_items: cart?.data?.cart_items?.map((data) => ({
+        cart_id: data?.id,
+        product_id: data?.product?.id,
+        quantity: data?.quantity,
+        order_status: "Processing",
+      })),
+    };
+
+    dispatch(userCheckout(payload));
   };
 
   return (
@@ -147,14 +166,17 @@ export default function Carts() {
       </div>
 
       {cart?.data?.cart_items?.length ? (
-        <CartSummary cartData={cart?.data?.cart_items} />
+        <CartSummary
+          cartData={cart?.data?.cart_items}
+          checkoutSubmit={checkoutSubmit}
+        />
       ) : null}
     </>
   );
 }
 
 const CartSummary = (data) => {
-  const { cartData } = data;
+  const { cartData, checkoutSubmit } = data;
 
   const actualPrice = cartData?.reduce(
     (a, b) => a + b?.product?.actual_price,
@@ -194,7 +216,7 @@ const CartSummary = (data) => {
       </div>
 
       <div className="flex justify-end mt-3">
-        <Button>Pay and Checkout</Button>
+        <Button onClick={checkoutSubmit}>Pay and Checkout</Button>
       </div>
     </div>
   );
