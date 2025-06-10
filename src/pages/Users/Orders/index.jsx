@@ -75,6 +75,8 @@ export default function Orders() {
                     <p className="text-sm">
                       Ordered on: {formatDate(order?.checkout_date)}
                     </p>
+
+                    {/* TODO: need to add the order status */}
                   </div>
                 </div>
               </CardContent>
