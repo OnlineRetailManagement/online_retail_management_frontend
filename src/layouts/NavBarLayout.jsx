@@ -90,11 +90,11 @@ const vendorPaths = {
 
 const userPaths = {
   paths: [
-    {
-      name: "dashboard",
-      url: USER_PATHS.dashboard,
-      icon: LayoutDashboard,
-    },
+    // {
+    //   name: "dashboard",
+    //   url: USER_PATHS.dashboard,
+    //   icon: LayoutDashboard,
+    // },
     {
       name: "products",
       url: USER_PATHS.products,

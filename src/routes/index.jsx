@@ -71,10 +71,10 @@ export default function Router() {
         </RoleBasedGuard>
       ),
       children: [
-        {
-          path: "dashboard",
-          element: <UsersDashboard />,
-        },
+        // {
+        //   path: "dashboard",
+        //   element: <UsersDashboard />,
+        // },
         {
           path: "products",
           element: <UsersProducts />,

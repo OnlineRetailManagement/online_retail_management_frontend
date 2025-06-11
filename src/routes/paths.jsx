@@ -25,7 +25,7 @@ export const VENDOR_PATHS = {
 
 // user
 export const USER_PATHS = {
-  dashboard: "/user/dashboard",
+  // dashboard: "/user/dashboard",
   products: "/user/products",
   cart: "/user/cart",
   orders: "/user/orders",
