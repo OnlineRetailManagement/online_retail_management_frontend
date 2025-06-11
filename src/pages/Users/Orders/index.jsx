@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "../../../redux/store";
 import useAuth from "../../../hooks/useAuth";
 // radix
 import { Card, CardContent } from "@/components/ui/card";
+// paths
+import { BASE_URL_IMG } from "../../../config";
 
 // ----------------------------------------
 
@@ -62,8 +64,8 @@ export default function Orders() {
                       <div className="basis-3/10">
                         <img
                           src={
-                            order?.product?.attachments[0]?.attachment_path ??
-                            null
+                            BASE_URL_IMG +
+                              order?.product?.attachments[0]?.file_name ?? ""
                           }
                           className="border"
                         />

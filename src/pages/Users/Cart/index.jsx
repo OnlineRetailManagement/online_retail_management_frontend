@@ -36,6 +36,7 @@ import { userCheckout } from "../../../redux/slices/checkout";
 import { getUserAddress, getUserPayment } from "../../../redux/slices/profile";
 // paths
 import { USER_PATHS } from "../../../routes/paths";
+import { BASE_URL_IMG } from "../../../config";
 
 // ----------------------------------------
 
@@ -121,7 +122,8 @@ export default function Carts() {
                     <div className="basis-3/10">
                       <img
                         src={
-                          crt?.product?.attachments[0]?.attachment_path ?? null
+                          BASE_URL_IMG +
+                            crt?.product?.attachments[0]?.file_name ?? ""
                         }
                         className="border"
                       />
