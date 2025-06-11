@@ -1,6 +1,7 @@
 //
 
 import React, { useEffect, useState } from "react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // redux
 import { getOrder } from "../../../redux/slices/orders";
 import { useDispatch, useSelector } from "../../../redux/store";
@@ -20,7 +21,7 @@ export default function Orders() {
 
   useEffect(() => {
     dispatch(getOrder(user?.user?.id, isGetActiveOrders, userRole));
-  }, [dispatch]);
+  }, [dispatch, isGetActiveOrders]);
 
   const { /* isLoading, */ orders } = useSelector((state) => state.orders);
 
@@ -35,7 +36,9 @@ export default function Orders() {
     return formatted;
   };
 
-  console.log(orders);
+  const handleTabChange = (newVal) => {
+    setIsGetActiveOrders(newVal === "pastOrders" ? false : true);
+  };
 
   return (
     <div className="ml-4 h-screen">
@@ -43,50 +46,63 @@ export default function Orders() {
         <p className="font-semibold text-gray-700">Users: Orders</p>
       </div>
 
-      <div className="flex flex-col gap-3">
-        {orders?.map((order) => {
-          return (
-            <Card className="w-full" key={`cart-${order.id}`}>
-              <CardContent>
-                <div className="flex flex-row gap-2">
-                  <div className="basis-3/10">
-                    <img
-                      src={
-                        order?.product?.attachments[0]?.attachment_path ?? null
-                      }
-                      className="border"
-                    />
-                  </div>
+      <div>
+        <Tabs defaultValue="activeOrders" onValueChange={handleTabChange}>
+          <TabsList>
+            <TabsTrigger value="activeOrders">Active Orders</TabsTrigger>
+            <TabsTrigger value="pastOrders">Past Orders</TabsTrigger>
+          </TabsList>
 
-                  <div className="basis-6/10">
-                    <p className="font-semibold">
-                      {order?.product?.title ?? ""}
-                    </p>
-                    <p className="text-sm">
-                      {order?.product?.description ?? ""}
-                    </p>
-                    <p className="text-sm">
-                      {order?.product?.delivery_time ?? ""}
-                    </p>
-                    <p>{order?.product?.discounted_price ?? ""} EUR</p>
-                    <p className="text-sm">Quantity: {order?.quantity}</p>
-                    <p>
-                      You saved{" "}
-                      {order?.product?.actual_price -
-                        order?.product?.discounted_price}
-                      EUR on this order.
-                    </p>
-                    <p className="text-sm">
-                      Ordered on: {formatDate(order?.checkout_date)}
-                    </p>
+          <div className="flex flex-col gap-3 py-3">
+            {orders?.map((order) => {
+              return (
+                <Card className="w-full" key={`cart-${order.id}`}>
+                  <CardContent>
+                    <div className="flex flex-row gap-2">
+                      <div className="basis-3/10">
+                        <img
+                          src={
+                            order?.product?.attachments[0]?.attachment_path ??
+                            null
+                          }
+                          className="border"
+                        />
+                      </div>
 
-                    {/* TODO: need to add the order status */}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+                      <div className="basis-6/10">
+                        <p className="font-semibold">
+                          {order?.product?.title ?? ""}
+                        </p>
+                        <p className="text-sm">
+                          {order?.product?.description ?? ""}
+                        </p>
+                        <p className="text-sm">
+                          {order?.product?.delivery_time ?? ""}
+                        </p>
+                        <p>{order?.product?.discounted_price ?? ""} EUR</p>
+                        <p className="text-sm">Quantity: {order?.quantity}</p>
+                        <p>
+                          You saved{" "}
+                          {order?.product?.actual_price -
+                            order?.product?.discounted_price}
+                          EUR on this order.
+                        </p>
+                        <p className="">
+                          Ordered status: {order?.order_status}
+                        </p>
+                        <p className="text-sm">
+                          Ordered on: {formatDate(order?.checkout_date)}
+                        </p>
+
+                        {/* TODO: need to add the order status */}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </Tabs>
       </div>
     </div>
   );

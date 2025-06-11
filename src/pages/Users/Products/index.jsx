@@ -73,7 +73,7 @@ export default function Products() {
         <p className="font-semibold text-gray-700">Users: Products</p>
       </div>
 
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-6">
         {products?.products?.map((product) => {
           return (
             <Card
@@ -121,10 +121,6 @@ export default function Products() {
                     >
                       <ShoppingCart />
                     </Button>
-
-                    <Button size="sm" className="cursor-pointer">
-                      Buy Now
-                    </Button>
                   </div>
                 </div>
               </CardContent>
@@ -139,7 +135,7 @@ export default function Products() {
           variant="outline"
           className="size-8"
           size="icon"
-          disabled={page === Math.floor(products?.pagination?.totalCount / 10)}
+          disabled={page === Math.floor(products?.pagination?.totalCount / 12)}
           onClick={() => goToPreviousPage(page - 1)}
         >
           <span className="sr-only">Go to previous page</span>
