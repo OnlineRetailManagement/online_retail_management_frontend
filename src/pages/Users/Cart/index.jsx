@@ -1,6 +1,6 @@
 //
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 // radix
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,6 +13,13 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 // lucid-react
 import { Trash2, ArrowRight } from "lucide-react";
 // redux
@@ -25,13 +32,15 @@ import {
   getCartRecord,
   updateCartQuantity,
 } from "../../../redux/slices/cart";
+import { userCheckout } from "../../../redux/slices/checkout";
+import { getUserAddress, getUserPayment } from "../../../redux/slices/profile";
 // paths
 import { USER_PATHS } from "../../../routes/paths";
-import { userCheckout } from "../../../redux/slices/checkout";
 
 // ----------------------------------------
 
 export default function Carts() {
+  const closeRef = useRef(null);
   const dispatch = useDispatch();
 
   const { user } = useAuth();
@@ -69,9 +78,11 @@ export default function Carts() {
     dispatch(deleteCartItem(cartId));
   };
 
-  const checkoutSubmit = () => {
+  const checkoutSubmit = (selectedAddress, selectedPayment) => {
     const payload = {
       user_id: user?.user?.id,
+      address_id: selectedAddress?.id,
+      payment_id: selectedPayment?.id,
       checkout_items: cart?.data?.cart_items?.map((data) => ({
         cart_id: data?.id,
         product_id: data?.product?.id,
@@ -81,6 +92,11 @@ export default function Carts() {
     };
 
     dispatch(userCheckout(payload));
+
+    // close the update address dialogue ...
+    if (closeRef.current) {
+      closeRef.current.click();
+    }
   };
 
   return (
@@ -169,6 +185,7 @@ export default function Carts() {
         <CartSummary
           cartData={cart?.data?.cart_items}
           checkoutSubmit={checkoutSubmit}
+          closeRef={closeRef}
         />
       ) : null}
     </>
@@ -176,7 +193,17 @@ export default function Carts() {
 }
 
 const CartSummary = (data) => {
+  const { closeRef } = data;
+
+  const dispatch = useDispatch();
+  const { user } = useAuth();
+
+  const [selectedAddress, setSelectedAddress] = useState({});
+  const [selectedPayment, setSelectedPayment] = useState({});
+
   const { cartData, checkoutSubmit } = data;
+
+  const { payment, addresses } = useSelector((state) => state.profile);
 
   const actualPrice = cartData?.reduce(
     (a, b) => a + b?.product?.actual_price,
@@ -187,6 +214,11 @@ const CartSummary = (data) => {
     (a, b) => a + b?.product?.discounted_price,
     0
   );
+
+  useEffect(() => {
+    dispatch(getUserAddress(user?.user?.id));
+    dispatch(getUserPayment(user?.user?.id));
+  }, [dispatch]);
 
   return (
     <div className="sticky bottom-4 border rounded-md p-3 bg-gray-200">
@@ -216,7 +248,78 @@ const CartSummary = (data) => {
       </div>
 
       <div className="flex justify-end mt-3">
-        <Button onClick={checkoutSubmit}>Pay and Checkout</Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="w-fit">Pay and Checkout</Button>
+          </DialogTrigger>
+
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Select Address and Payment</DialogTitle>
+            </DialogHeader>
+
+            <div className="grid gap-4 pt-3">
+              <div>
+                <p>Select Address</p>
+                <div className="grid gap-3">
+                  {addresses?.map((add) => {
+                    return (
+                      <Card
+                        key={`address-${add.id}`}
+                        className={`p-3 cursor-pointer ${
+                          selectedAddress.id === add.id ? "bg-gray-300" : ""
+                        }`}
+                        onClick={() => setSelectedAddress(add)}
+                      >
+                        <p>
+                          {add.address_line1}, {add.address_line2}, {add.city},{" "}
+                          {add.zip_code}, {add.country}
+                        </p>
+                      </Card>
+                    );
+                  })}
+                </div>
+
+                <p className="pt-2">Select Payment</p>
+                <div className="grid gap-3">
+                  {payment?.map((paym) => {
+                    return (
+                      <Card
+                        key={`payment-${paym.id}`}
+                        className={`p-3 gap-0 cursor-pointer ${
+                          selectedPayment.id === paym.id ? "bg-gray-300" : ""
+                        }`}
+                        onClick={() => setSelectedPayment(paym)}
+                      >
+                        <p>Card no: {paym.card_no}</p>
+                        <p>
+                          Expiry date:{" "}
+                          {new Date(paym.expiry_date).toLocaleDateString()}
+                        </p>
+                        <p>CVV: {paym.cvv}</p>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <Button
+                  type="submit"
+                  onClick={() =>
+                    checkoutSubmit(selectedAddress, selectedPayment)
+                  }
+                >
+                  Save And Proceed
+                </Button>
+              </div>
+            </div>
+
+            <DialogTrigger asChild>
+              <button ref={closeRef} className="hidden" />
+            </DialogTrigger>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

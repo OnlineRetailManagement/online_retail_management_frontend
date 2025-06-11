@@ -13,6 +13,7 @@ const initialState = {
   isLoading: false,
   error: null,
   profile: {},
+  profileupdate: false,
 
   // addresses
   isLoadingAdd: false,
@@ -21,6 +22,13 @@ const initialState = {
   isAddressUpdated: false,
   addresses: [],
   isDeletedAddress: false,
+
+  // payment
+  isLoadingPayment: false,
+  isAddedPayment: false,
+  isDeletedPayment: false,
+  isPaymentError: null,
+  payment: [],
 };
 
 const slice = createSlice({
@@ -32,6 +40,7 @@ const slice = createSlice({
       state.isLoading = true;
       state.error = null;
       state.profile = {};
+      state.profileupdate = false;
     },
 
     // HAS ERROR
@@ -41,11 +50,17 @@ const slice = createSlice({
       //   state.profile = {};
     },
 
+    getProfileSuccess(state, action) {
+      state.isLoading = false;
+      state.profile = action.payload;
+    },
+
     // PUT PROFILE
     updateProfileSuccess(state, action) {
       state.isLoading = false;
       state.profile = action.payload;
       state.error = null;
+      state.profileupdate = true;
     },
 
     //// ADDRESS
@@ -53,7 +68,7 @@ const slice = createSlice({
     startLoadingAddress(state, action) {
       state.isLoadingAdd = true;
       state.addError = action.payload;
-      state.addresses = [];
+      // state.addresses = [];
       state.isAddedNewAddress = false;
       state.isDeletedAddress = false;
       state.isAddressUpdated = false;
@@ -92,8 +107,38 @@ const slice = createSlice({
     addUserAddressError(state, action) {
       state.isLoadingAdd = false;
       state.addError = action.payload;
-      state.addresses = [];
+      // state.addresses = [];
       state.isAddedNewAddress = false;
+    },
+
+    // PAYMENT
+    startLoadingPayment(state, action) {
+      state.isLoadingPayment = true;
+      state.isAddedPayment = false;
+      state.isPaymentError = null;
+      state.isDeletedPayment = false;
+    },
+
+    getUserPaymentSuccess(state, action) {
+      state.isLoadingPayment = false;
+      state.payment = action.payload;
+    },
+
+    deleteUserPaymentSuccess(state, action) {
+      state.isLoadingPayment = false;
+      state.isDeletedPayment = true;
+    },
+
+    addUserPaymentSuccess(state, action) {
+      state.isLoadingPayment = false;
+      state.isAddedPayment = true;
+      state.isPaymentError = null;
+    },
+
+    addUserPaymentError(state, action) {
+      state.isLoadingPayment = false;
+      state.isAddedPayment = false;
+      state.isPaymentError = action.payload;
     },
   },
 });
@@ -103,14 +148,24 @@ export default slice.reducer;
 
 // ----------------------------------------
 
-export function updateProfile(payload) {
+export function getProfile(userId) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.put(
-        `/public/profile/${payload.id}`,
-        payload
-      );
+      const response = await axios.get(`/public/profile/${userId}`);
+
+      dispatch(slice.actions.getProfileSuccess(response?.data?.data?.user));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+
+export function updateProfile(payload, userId) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.put(`/public/profile/${userId}`, payload);
 
       dispatch(slice.actions.updateProfileSuccess(response.data));
     } catch (error) {
@@ -154,7 +209,7 @@ export function addUserAddress(payload) {
   };
 }
 
-// POST
+// PUT
 export function updateUserAddress(payload, addressId) {
   return async () => {
     dispatch(slice.actions.startLoadingAddress());
@@ -186,6 +241,61 @@ export function deleteUserAddress(addressId) {
     } catch (error) {
       dispatch(slice.actions.hasError(error));
       toast.success("Oops, something went wrong while deleting address ...!");
+    }
+  };
+}
+
+// ====== Payment ===
+// GET
+export function getUserPayment(userId) {
+  return async () => {
+    dispatch(slice.actions.startLoadingAddress());
+    try {
+      const response = await axios.get(`/public/payment/${userId}`);
+
+      dispatch(
+        slice.actions.getUserPaymentSuccess(response?.data?.data?.payments)
+      );
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+
+// POST
+export function addPaymentAddress(payload) {
+  return async () => {
+    dispatch(slice.actions.startLoadingPayment());
+    try {
+      const response = await axios.post("/public/payment", payload);
+
+      console.log(response.data);
+
+      if (response?.data?.data?.id) {
+        dispatch(slice.actions.addUserPaymentSuccess());
+        toast.success("Your New Payment has been added successfully ...!");
+      }
+    } catch (error) {
+      dispatch(slice.actions.addUserPaymentError(error));
+      toast.error("Oops, something went wrong while adding new payment ...!");
+    }
+  };
+}
+
+// DELETE
+export function deleteUserPayment(recordId) {
+  return async () => {
+    dispatch(slice.actions.startLoadingAddress());
+    try {
+      const response = await axios.delete(`/public/payment/${recordId}`);
+
+      dispatch(
+        slice.actions.deleteUserPaymentSuccess(response?.data?.data?.payments)
+      );
+      toast.success("Payment method is deleted successfully ...!");
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      toast.success("Oops, something went wrong while deleting ...!");
     }
   };
 }

@@ -27,9 +27,13 @@ import useAuth from "../../hooks/useAuth";
 // redux
 import { useDispatch, useSelector } from "../../redux/store";
 import {
+  addPaymentAddress,
   addUserAddress,
   deleteUserAddress,
+  deleteUserPayment,
+  getProfile,
   getUserAddress,
+  getUserPayment,
   updateProfile,
   updateUserAddress,
 } from "../../redux/slices/profile";
@@ -59,8 +63,8 @@ export default function Profile() {
   const [editAddressData, setEditAddressData] = useState(null);
 
   const {
-    // isLoadingAdd,
-    // addError,
+    profile,
+    profileupdate,
     addresses,
     isAddedNewAddress,
     isDeletedAddress,
@@ -69,6 +73,8 @@ export default function Profile() {
 
   useEffect(() => {
     dispatch(getUserAddress(user?.user?.id));
+    dispatch(getProfile(user?.user?.id));
+    dispatch(getUserPayment(user?.user?.id));
   }, [dispatch]);
 
   useEffect(() => {
@@ -89,6 +95,29 @@ export default function Profile() {
     }
   }, [isDeletedAddress]);
 
+  useEffect(() => {
+    if (profileupdate) {
+      dispatch(getProfile(user?.user?.id));
+    }
+  }, [profileupdate]);
+
+  function formatDate(dateStr) {
+    const date = new Date(dateStr);
+
+    if (isNaN(date.getTime())) {
+      return "Invalid date";
+    }
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const day = String(date.getDate()).padStart(2, "0");
+
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day}T${hours}:${minutes}:00`;
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -98,19 +127,19 @@ export default function Profile() {
 
     const payload = {
       ...userData,
-      firstName: elements.get("first_name"),
-      lastName: elements.get("last_name"),
+      first_name: elements.get("first_name"),
+      last_name: elements.get("last_name"),
       email: elements.get("email"),
-      userLanguage: elements.get("language"),
-      location: elements.get("location"),
-      age: elements.get("age"),
-      dateOfBirth: elements.get("date_of_birth"),
+      user_language: elements.get("language"),
+      country: elements.get("country"),
+      age: Number(elements.get("age")),
+      date_of_birth: formatDate(elements.get("date_of_birth")),
       gender: elements.get("gender"),
+      role: user?.role[0]?.authority,
     };
 
     try {
-      dispatch(updateProfile(payload));
-
+      dispatch(updateProfile(payload, user?.user?.id));
       toast.success("Profile updated successfully ...!");
     } catch (error) {
       toast.success("Oops, error while updating profile ...!");
@@ -169,6 +198,20 @@ export default function Profile() {
     }
   };
 
+  function formatToDDMMYYYY(dateStr) {
+    const date = new Date(dateStr);
+
+    if (isNaN(date.getTime())) {
+      return "Invalid date";
+    }
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
+
   return (
     <>
       <div>
@@ -186,7 +229,7 @@ export default function Profile() {
                 className="w-16 h-16 rounded-full object-cover border-1 border-gray-300"
               />
               <p className="text-sm font-medium text-gray-700">
-                {user?.firstName ?? "" + " " + user?.lastName ?? ""}
+                {user?.user?.first_name + " " + user?.user?.last_name}
               </p>
             </div>
           </div>
@@ -202,7 +245,7 @@ export default function Profile() {
                     name="first_name"
                     required
                     placeholder="Add your first name here"
-                    defaultValue={user?.user?.firstName}
+                    defaultValue={profile?.first_name}
                   />
                 </div>
 
@@ -213,7 +256,7 @@ export default function Profile() {
                     name="last_name"
                     required
                     placeholder="Add your first name here"
-                    defaultValue={user?.user?.lastName}
+                    defaultValue={profile?.last_name}
                   />
                 </div>
               </div>
@@ -226,7 +269,7 @@ export default function Profile() {
                     id="email"
                     name="email"
                     required
-                    defaultValue={user?.user?.email}
+                    defaultValue={profile?.email}
                   />
                 </div>
 
@@ -237,7 +280,7 @@ export default function Profile() {
                     name="language"
                     required
                     placeholder="Add your prefered language"
-                    defaultValue={user?.user?.userLanguage}
+                    defaultValue={profile?.user_language}
                   />
                 </div>
               </div>
@@ -245,13 +288,13 @@ export default function Profile() {
               {/* location and age */}
               <div className="grid grid-flow-col gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="location">Location</Label>
+                  <Label htmlFor="country">Country</Label>
                   <Input
-                    id="location"
-                    name="location"
+                    id="country"
+                    name="country"
                     required
-                    placeholder="Add your location here"
-                    defaultValue={user?.user?.location}
+                    placeholder="Add your country here"
+                    defaultValue={profile?.country}
                   />
                 </div>
 
@@ -263,7 +306,7 @@ export default function Profile() {
                     type="number"
                     required
                     placeholder="Add your age"
-                    defaultValue={user?.user?.age}
+                    defaultValue={profile?.age}
                   />
                 </div>
               </div>
@@ -277,7 +320,7 @@ export default function Profile() {
                     name="date_of_birth"
                     type="date"
                     required
-                    // defaultValue={user?.user?.location}
+                    defaultValue={formatToDDMMYYYY(profile?.date_of_birth)}
                   />
                 </div>
 
@@ -286,7 +329,8 @@ export default function Profile() {
                   <Select name="gender" id="gender">
                     <SelectTrigger className="w-full" id="rows-per-page">
                       <SelectValue
-                      // placeholder={producCategories[0].name}
+                        // defaultValue={profile?.gender}
+                        placeholder={profile?.gender}
                       />
                     </SelectTrigger>
 
@@ -359,6 +403,9 @@ export default function Profile() {
               );
             })}
           </div>
+
+          {/* payment details ... */}
+          <PaymentSection dispatch={dispatch} user={user} />
         </div>
       </div>
     </>
@@ -583,6 +630,171 @@ const EditAddressButton = (data) => {
 
             <div>
               <Button type="submit">Save Address</Button>
+            </div>
+          </div>
+
+          <DialogTrigger asChild>
+            <button ref={closeRef} className="hidden" />
+          </DialogTrigger>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const PaymentSection = (data) => {
+  const { dispatch, user } = data;
+
+  const closeRef = useRef(null);
+
+  const { isAddedPayment, payment, isDeletedPayment } = useSelector(
+    (state) => state.profile
+  );
+
+  useEffect(() => {
+    if (isAddedPayment || isDeletedPayment) {
+      // get payment
+      dispatch(getUserPayment(user?.user?.id));
+    }
+  }, [isAddedPayment, isDeletedPayment]);
+
+  function formatDate(dateStr) {
+    const date = new Date(dateStr);
+
+    if (isNaN(date.getTime())) {
+      return "Invalid date";
+    }
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const day = String(date.getDate()).padStart(2, "0");
+
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day}T${hours}:${minutes}:00`;
+  }
+
+  const handleNewCardSubmit = (e) => {
+    e.preventDefault();
+
+    const elements = new FormData(e.currentTarget);
+
+    const payload = {
+      card_no: Number(elements.get("card_no")),
+      expiry_date: formatDate(elements.get("expiry_date")),
+      cvv: Number(elements.get("cvv")),
+      user_id: user?.user?.id,
+      type: "",
+    };
+
+    dispatch(addPaymentAddress(payload));
+
+    // close the update address dialogue ...
+    if (closeRef.current) {
+      closeRef.current.click();
+    }
+  };
+
+  const handleDeletePayment = (recordId) => {
+    dispatch(deleteUserPayment(recordId));
+  };
+
+  return (
+    <>
+      <div className="flex justify-between rounded-2xl my-5 pt-2">
+        <p className="font-bold">Manage Payments</p>
+
+        <AddNewPaymentModal
+          handleNewCardSubmit={handleNewCardSubmit}
+          closeRef={closeRef}
+        />
+      </div>
+
+      <div className="flex flex-col gap-3">
+        {payment?.map((paym) => {
+          return (
+            <Card className="w-full" key={`payment-${paym.id}`}>
+              <CardContent>
+                <div className="flex">
+                  <div className="basis-8/10">
+                    <p>Card number: {paym.card_no}</p>
+                    <p>
+                      Expiry Date:{" "}
+                      {new Date(paym.expiry_date).toLocaleDateString()}
+                    </p>
+                    <p>CVV: {paym.cvv}</p>
+                  </div>
+
+                  <div className="basis-2/10">
+                    <div className="flex gap-2">
+                      <Button onClick={() => handleDeletePayment(paym.id)}>
+                        <Trash2 />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    </>
+  );
+};
+
+const AddNewPaymentModal = (data) => {
+  const { handleNewCardSubmit, closeRef } = data;
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>+ Add new card</Button>
+      </DialogTrigger>
+
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add New Card Detail</DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleNewCardSubmit}>
+          <div className="grid gap-3 pt-3">
+            <div className="grid gap-1">
+              <Label htmlFor="title">Card Number</Label>
+              <Input
+                id="card_no"
+                name="card_no"
+                required
+                placeholder="Card Number"
+                // defaultValue={data?.card_no}
+              />
+            </div>
+
+            <div className="grid gap-1">
+              <Label htmlFor="expiry_date">Expiry Date</Label>
+              <Input
+                id="expiry_date"
+                name="expiry_date"
+                required
+                type="date"
+                placeholder="Expiry Date"
+                // defaultValue={data?.expiry_date}
+              />
+            </div>
+
+            <div className="grid gap-1">
+              <Label htmlFor="cvv">CVV</Label>
+              <Input
+                id="cvv"
+                name="cvv"
+                required
+                placeholder="CVV"
+                // defaultValue={data?.cvv}
+              />
+            </div>
+
+            <div className="pt-3 flex justify-end">
+              <Button type="submit">Save Card</Button>
             </div>
           </div>
 
