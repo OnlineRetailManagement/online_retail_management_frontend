@@ -68,6 +68,10 @@ export default function Carts() {
     }
   }, [isDeletionSuccess]);
 
+  useEffect(() => {}, []);
+
+  // console.log(checkoutResponse);
+
   const handleQuantityUpdate = (quant, cartId) => {
     const payload = { quantity: quant };
 
@@ -206,12 +210,13 @@ const CartSummary = (data) => {
   const { payment, addresses } = useSelector((state) => state.profile);
 
   const actualPrice = cartData?.reduce(
-    (a, b) => a + b?.product?.actual_price,
+    (a, b) => a + b?.product?.actual_price * (b?.quantity ? b?.quantity : 1),
     0
   );
 
   const discountedPrice = cartData?.reduce(
-    (a, b) => a + b?.product?.discounted_price,
+    (a, b) =>
+      a + b?.product?.discounted_price * (b?.quantity ? b?.quantity : 1),
     0
   );
 
