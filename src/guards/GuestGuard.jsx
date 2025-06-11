@@ -12,7 +12,7 @@ export default function GuestGuard({ children }) {
   const { isAuthenticated, userRole } = useAuth();
 
   if (isAuthenticated) {
-    if (userRole === "user") return <Navigate to={USER_PATHS.dashboard} />;
+    if (userRole === "user") return <Navigate to={USER_PATHS.products} />;
     else if (userRole === "vendor")
       return <Navigate to={VENDOR_PATHS.dashboard} />;
     else if (userRole === "admin")

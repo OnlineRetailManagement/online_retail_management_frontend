@@ -66,7 +66,7 @@ export default function RoleBasedGuard({ accessibleRoles, children }) {
                     ? ADMIN_PATHS.dashboard
                     : currentRole === "vendor"
                     ? VENDOR_PATHS.dashboard
-                    : USER_PATHS.dashboard
+                    : USER_PATHS.products
                 }
                 className="underline underline-offset-4"
               >
