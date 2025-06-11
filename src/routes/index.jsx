@@ -20,6 +20,7 @@ import UsersCart from "../pages/Users/Cart";
 import VendorsDashboard from "../pages/Vendors/Dashboard";
 import VendorsProducts from "../pages/Vendors/Products";
 import VendorsAddProducts from "../pages/Vendors/AddProduct";
+import VendorsOrders from "../pages/Vendors/Orders";
 // @admin
 import AdminsDashboard from "../pages/Admin/Dashboard";
 import AdminsProducts from "../pages/Admin/Products";
@@ -113,6 +114,10 @@ export default function Router() {
         {
           path: "add-products",
           element: <VendorsAddProducts />,
+        },
+        {
+          path: "orders",
+          element: <VendorsOrders />,
         },
         {
           path: "profile",

@@ -1,6 +1,7 @@
 //
 
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "sonner";
 // utils
 import axios from "../../utils/axios";
 //
@@ -12,6 +13,8 @@ const initialState = {
   isLoading: false,
   error: null,
   orders: [],
+
+  isOrderUpdated: false,
 };
 
 const slice = createSlice({
@@ -23,6 +26,7 @@ const slice = createSlice({
       state.isLoading = true;
       state.error = null;
       state.orders = [];
+      state.isOrderUpdated = false;
     },
 
     // HAS ERROR
@@ -38,6 +42,13 @@ const slice = createSlice({
       state.error = null;
       state.orders = action.payload;
     },
+
+    // UPDATE SUCCESS
+    updateOrderSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      state.isOrderUpdated = true;
+    },
   },
 });
 
@@ -46,12 +57,13 @@ export default slice.reducer;
 
 // ----------------------------------------
 
-export function getOrderProducts(userId) {
+// GET: [ACCESSIBILITY: USER, VENDOR]
+export function getOrder(userId, isActiveOrder, userRole) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get("/user/orders", {
-        params: { user_id: userId },
+      const response = await axios.get(`/${userRole}/orders`, {
+        params: { user_id: userId, is_active: isActiveOrder },
       });
 
       dispatch(
@@ -61,6 +73,24 @@ export function getOrderProducts(userId) {
       );
     } catch (error) {
       dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+
+// PUT: [ACCESSIBILITY: VENDOR]
+export function updateOrder(payload) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.put("/vendor/orders", null, {
+        params: payload,
+      });
+
+      dispatch(slice.actions.updateOrderSuccess(response?.data?.data));
+      toast.success("Order status updated successfully ...!");
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      toast.error("Oops, something went wrong while updating ...!");
     }
   };
 }
