@@ -1,8 +1,8 @@
 //
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 // redux
-import { getOrderProducts } from "../../../redux/slices/orders";
+import { getOrder } from "../../../redux/slices/orders";
 import { useDispatch, useSelector } from "../../../redux/store";
 // useAuth
 import useAuth from "../../../hooks/useAuth";
@@ -14,10 +14,12 @@ import { Card, CardContent } from "@/components/ui/card";
 export default function Orders() {
   const dispatch = useDispatch();
 
-  const { user } = useAuth();
+  const { user, userRole } = useAuth();
+
+  const [isGetActiveOrders, setIsGetActiveOrders] = useState(true);
 
   useEffect(() => {
-    dispatch(getOrderProducts(user?.user?.id));
+    dispatch(getOrder(user?.user?.id, isGetActiveOrders, userRole));
   }, [dispatch]);
 
   const { /* isLoading, */ orders } = useSelector((state) => state.orders);
@@ -32,6 +34,8 @@ export default function Orders() {
 
     return formatted;
   };
+
+  console.log(orders);
 
   return (
     <div className="ml-4 h-screen">
