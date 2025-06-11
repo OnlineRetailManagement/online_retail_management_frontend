@@ -68,9 +68,11 @@ export default function Carts() {
     }
   }, [isDeletionSuccess]);
 
-  useEffect(() => {}, []);
-
-  // console.log(checkoutResponse);
+  useEffect(() => {
+    if (checkoutResponse?.length) {
+      dispatch(getCartRecord(user?.user?.id));
+    }
+  }, [checkoutResponse]);
 
   const handleQuantityUpdate = (quant, cartId) => {
     const payload = { quantity: quant };
