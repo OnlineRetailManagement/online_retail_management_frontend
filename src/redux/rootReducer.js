@@ -10,6 +10,7 @@ import profilesReducer from "./slices/profile";
 import cartsReducer from "./slices/cart";
 import checkoutReducer from "./slices/checkout";
 import orderReducer from "./slices/orders";
+import analyticReducer from "./slices/analytics";
 
 // ----------------------------------------
 
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   cart: cartsReducer,
   checkout: checkoutReducer,
   orders: orderReducer,
+  analytics: analyticReducer,
 });
 
 export { rootPersistConfig, rootReducer };

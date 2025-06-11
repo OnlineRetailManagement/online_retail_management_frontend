@@ -13,6 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 // icons
 import { ShoppingCart, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+// path
+import { BASE_URL_IMG } from "../../../config";
 
 // ----------------------------------------
 
@@ -82,11 +84,7 @@ export default function Products() {
             >
               <CardHeader>
                 <img
-                  src={
-                    product?.attachments[0]?.attachment_path
-                      ? "file://" + product?.attachments[0]?.attachment_path
-                      : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP2_fg-TaBTO6NqpgNyBO_PFUwoE-sV347wQ&s"
-                  }
+                  src={BASE_URL_IMG + product?.attachments[0]?.file_name}
                   alt="Product"
                   className="w-full h-40 object-cover rounded-lg"
                 />

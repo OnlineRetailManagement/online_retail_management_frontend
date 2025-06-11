@@ -57,7 +57,11 @@ export default function Users() {
   }
 
   return (
-    <div className="border-t">
+    <div className="ml-4 h-screen">
+      <div className="flex my-5">
+        <p className="font-semibold text-gray-700">Admin: Users</p>
+      </div>
+
       <div className="rounded-2xl p-2 pt-6 mt-4">
         <Table className="border rounded-2xl">
           <TableHeader className="sticky top-0 z-10 bg-muted">
@@ -77,11 +81,11 @@ export default function Users() {
               return (
                 <TableRow key={`user-${id}`}>
                   <TableCell colSpan={1} className="h-24 text-center">
-                    {user?.firstName && "-"}
+                    {user?.first_name ?? ""}
                   </TableCell>
 
                   <TableCell colSpan={1} className="h-24 text-center">
-                    {user?.lastName && "-"}
+                    {user?.last_name ?? "-"}
                   </TableCell>
 
                   <TableCell colSpan={1} className="h-24 text-center">
