@@ -12,6 +12,8 @@ const initialState = {
   isLoading: false,
   error: null,
   users: [],
+
+  vendors: [],
 };
 
 const slice = createSlice({
@@ -34,6 +36,11 @@ const slice = createSlice({
       state.isLoading = false;
       state.users = action.payload;
     },
+
+    getVendorsSuccess(state, action) {
+      state.isLoading = false;
+      state.vendors = action.payload;
+    },
   },
 });
 
@@ -42,6 +49,7 @@ export default slice.reducer;
 
 // ----------------------------------------
 
+// ADMIN: GET USERS
 export function getUsers(payload) {
   return async () => {
     dispatch(slice.actions.startLoading());
@@ -51,6 +59,22 @@ export function getUsers(payload) {
       });
 
       dispatch(slice.actions.getUsersSuccess(response.data?.data ?? {}));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+
+// ADMIN: GET VENDORS
+export function getVendors(payload) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.get("/admin/vendors", {
+        params: payload,
+      });
+
+      dispatch(slice.actions.getVendorsSuccess(response.data?.data ?? {}));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }

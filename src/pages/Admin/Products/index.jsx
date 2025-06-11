@@ -62,7 +62,11 @@ export default function Products() {
   };
 
   return (
-    <div className="border-t mb-6">
+    <div className="ml-4 h-screen">
+      <div className="flex my-5">
+        <p className="font-semibold text-gray-700">Admin: Products</p>
+      </div>
+
       <div className="rounded-2xl p-2 pt-6 mt-4">
         <Table className="border rounded-2xl">
           <TableHeader className="sticky top-0 z-10 bg-muted">
