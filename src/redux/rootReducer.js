@@ -8,6 +8,8 @@ import productsReducer from "./slices/products";
 import attachmentsReducer from "./slices/attachments";
 import profilesReducer from "./slices/profile";
 import cartsReducer from "./slices/cart";
+import checkoutReducer from "./slices/checkout";
+import orderReducer from "./slices/orders";
 
 // ----------------------------------------
 
@@ -24,6 +26,8 @@ const rootReducer = combineReducers({
   attachments: attachmentsReducer,
   profile: profilesReducer,
   cart: cartsReducer,
+  checkout: checkoutReducer,
+  orders: orderReducer,
 });
 
 export { rootPersistConfig, rootReducer };
