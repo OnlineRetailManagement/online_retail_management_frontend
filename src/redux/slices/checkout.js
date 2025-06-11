@@ -1,6 +1,7 @@
 //
 
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "sonner";
 // utils
 import axios from "../../utils/axios";
 //
@@ -51,8 +52,6 @@ export function userCheckout(payload) {
     dispatch(slice.actions.startLoading());
     try {
       const response = await axios.post("/user/order-checkout", payload);
-
-      console.log(response.data);
 
       dispatch(slice.actions.checkOutSuccess(response.data ?? {}));
       toast.success("Your Order has been placed successfully ...!");
