@@ -34,14 +34,14 @@ export default function Dashboard() {
           <Card>
             <CardContent>
               <p>Total Users</p>
-              <p className="font-semibold">{analytics?.total_users}</p>
+              <p className="font-semibold">{analytics?.total_users ?? 0}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent>
               <p>Total Vendors</p>
-              <p className="font-semibold">{analytics?.total_vendors}</p>
+              <p className="font-semibold">{analytics?.total_vendors ?? 0}</p>
             </CardContent>
           </Card>
         </div>
@@ -53,7 +53,7 @@ export default function Dashboard() {
           <Card>
             <CardContent>
               <p>Total Revenue</p>
-              <p className="font-semibold">{analytics?.total_revenue} €</p>
+              <p className="font-semibold">{analytics?.total_revenue ?? 0} €</p>
             </CardContent>
           </Card>
 
@@ -61,7 +61,7 @@ export default function Dashboard() {
             <CardContent>
               <p>Total Revenue After Discount</p>
               <p className="font-semibold">
-                {analytics?.total_discounted_revenue} €
+                {analytics?.total_discounted_revenue ?? 0} €
               </p>
             </CardContent>
           </Card>
@@ -82,28 +82,32 @@ export default function Dashboard() {
           <Card className="grid gap-2">
             <CardContent>
               <p>Under Processing Orders</p>
-              <p className="font-semibold">{analytics?.count_processing}</p>
+              <p className="font-semibold">
+                {analytics?.count_processing ?? 0}
+              </p>
             </CardContent>
           </Card>
 
           <Card className="grid gap-2">
             <CardContent>
               <p>Confirmed Orders</p>
-              <p className="font-semibold">{analytics?.count_confirmed}</p>
+              <p className="font-semibold">{analytics?.count_confirmed ?? 0}</p>
             </CardContent>
           </Card>
 
           <Card className="grid gap-2">
             <CardContent>
               <p>Shipped Orders</p>
-              <p className="font-semibold">{analytics?.count_shipped}</p>
+              <p className="font-semibold">{analytics?.count_shipped ?? 0}</p>
             </CardContent>
           </Card>
 
           <Card className="grid gap-2">
             <CardContent>
               <p>In Transist Orders</p>
-              <p className="font-semibold">{analytics?.count_in_transit}</p>
+              <p className="font-semibold">
+                {analytics?.count_in_transit ?? 0}
+              </p>
             </CardContent>
           </Card>
 
@@ -111,7 +115,7 @@ export default function Dashboard() {
             <CardContent>
               <p>Out for Delivery Orders</p>
               <p className="font-semibold">
-                {analytics?.count_out_for_delivery}
+                {analytics?.count_out_for_delivery ?? 0}
               </p>
             </CardContent>
           </Card>
@@ -119,7 +123,9 @@ export default function Dashboard() {
           <Card className="grid gap-2">
             <CardContent>
               <p>Delivered Orders</p>
-              <p className="font-semibold">{analytics?.count_in_delivered}</p>
+              <p className="font-semibold">
+                {analytics?.count_in_delivered ?? 0}
+              </p>
             </CardContent>
           </Card>
         </div>
