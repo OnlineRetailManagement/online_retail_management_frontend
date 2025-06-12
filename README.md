@@ -1,4 +1,4 @@
-# Software Development Practices | Online Retail Management | Frontend
+# Software Development Practices | Online Retail Management | Bestellix | Frontend
 
 ## React + Vite
 

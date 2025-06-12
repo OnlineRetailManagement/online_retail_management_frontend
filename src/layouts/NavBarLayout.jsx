@@ -131,10 +131,10 @@ export default function NavBarLayout() {
 
   const headerText =
     userRole === "admin"
-      ? "Online Retail (Admin Portal)"
+      ? "Bestellix (Admin Portal)"
       : userRole === "vendor"
-      ? "Online Retail (Vendor Portal)"
-      : "Online Retail";
+      ? "Bestellix (Vendor Portal)"
+      : "Bestellix";
 
   const currentPageEle = navPaths.paths.find((el) => el.url === pathname);
 
