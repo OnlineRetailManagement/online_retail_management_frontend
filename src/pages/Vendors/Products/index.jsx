@@ -1,7 +1,6 @@
 //
 
-import React, { useEffect, useState } from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import React, { useEffect } from "react";
 // redux
 import { useDispatch, useSelector } from "../../../redux/store";
 import { getProducts } from "../../../redux/slices/products";
@@ -15,7 +14,8 @@ import {
   TableBody,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-// auth
+import { Link } from "react-router-dom";
+import { VENDOR_PATHS } from "../../../routes/paths";
 import useAuth from "../../../hooks/useAuth";
 
 // ----------------------------------------
@@ -23,8 +23,6 @@ import useAuth from "../../../hooks/useAuth";
 export default function Products() {
   const dispatch = useDispatch();
   const { user, userRole } = useAuth();
-
-  const [page, setPage] = useState(1);
 
   const { isLoading, products } = useSelector((state) => state.products);
 
@@ -47,27 +45,15 @@ export default function Products() {
     );
   }
 
-  const goToPreviousPage = (currentPage) => {
-    dispatch(
-      getProducts({ offset: (currentPage - 1) * 10, limit: 10 }, userRole)
-    );
-    setPage(currentPage);
-  };
-
-  const goToNextPage = (currentPage) => {
-    dispatch(
-      getProducts({ offset: (currentPage - 1) * 10, limit: 10 }, userRole)
-    );
-    setPage(currentPage);
-  };
-
   return (
-    <div className="ml-4 h-screen">
-      <div className="flex my-5">
-        <p className="font-semibold text-gray-700">Admin: Products</p>
-      </div>
+    <div className="border-t">
+      <div className="rounded-2xl p-2 pt-6 mt-2">
+        <div className="flex justify-end mb-4">
+          <Button asChild>
+            <Link to={VENDOR_PATHS.addProducts}>Add Products</Link>
+          </Button>
+        </div>
 
-      <div className="rounded-2xl p-2 pt-6 mt-4">
         <Table className="border rounded-2xl">
           <TableHeader className="sticky top-0 z-10 bg-muted">
             <TableRow>
@@ -89,34 +75,6 @@ export default function Products() {
             <TableBodyContent products={products?.products} />
           </TableBody>
         </Table>
-      </div>
-
-      <div className="ml-auto flex justify-end mt-1 mr-3 items-center gap-2 lg:ml-0">
-        <div className="flex w-fit items-center justify-center text-sm font-medium">
-          {`Page ${page} of ${Math.ceil(products.pagination?.totalCount / 10)}`}
-        </div>
-
-        <Button
-          variant="outline"
-          className="size-8"
-          size="icon"
-          disabled={page === Math.floor(products?.pagination?.totalCount / 10)}
-          onClick={() => goToPreviousPage(page - 1)}
-        >
-          <span className="sr-only">Go to previous page</span>
-          <ChevronLeftIcon />
-        </Button>
-
-        <Button
-          variant="outline"
-          className="size-8"
-          size="icon"
-          disabled={page === Math.ceil(products?.pagination?.totalCount / 10)}
-          onClick={() => goToNextPage(page + 1)}
-        >
-          <span className="sr-only">Go to next page</span>
-          <ChevronRightIcon />
-        </Button>
       </div>
     </div>
   );

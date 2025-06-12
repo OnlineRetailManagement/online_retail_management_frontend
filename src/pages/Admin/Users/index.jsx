@@ -8,14 +8,6 @@ import { getUsers } from "../../../redux/slices/users";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 // components
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 import {
   Table,
   TableHeader,
@@ -24,49 +16,31 @@ import {
   TableHead,
   TableBody,
 } from "@/components/ui/table";
+// auth
+import useAuth from "../../../hooks/useAuth";
 
 // ----------------------------------------
 
 export default function Users() {
   const dispatch = useDispatch();
+  const { userRole } = useAuth();
 
-  const [limit, setLimit] = useState(10);
-  const [offset, setOffset] = useState(0);
+  const [page, setPage] = useState(1);
 
   const { isLoading, users } = useSelector((state) => state.users);
 
   useEffect(() => {
-    getUsersList(offset, limit);
+    dispatch(getUsers({ offset: 0, limit: 10 }, userRole));
   }, [dispatch]);
 
-  // console.log(users);
-
-  const getUsersList = (offs, limi) => {
-    const payload = { offset: offs, limit: limi };
-
-    dispatch(getUsers(payload));
+  const goToPreviousPage = (currentPage) => {
+    dispatch(getUsers({ offset: (currentPage - 1) * 10, limit: 10 }, userRole));
+    setPage(currentPage);
   };
 
-  // TODO: adding pagination is pending here ...
-  const handlePageLimit = (value) => {
-    setLimit(value);
-    getUsersList(offset, value);
-  };
-
-  const goToPreviousPage = () => {
-    if (offset - limit >= 0) setOffset(offset - limit);
-    else setOffset(0);
-    // API call
-
-    getUsersList(offset - limit >= 0 ? offset - limit : 0, limit);
-  };
-
-  const goToNextPage = () => {
-    if (offset + limit >= 0) setOffset(offset + limit);
-    else setOffset(0);
-    // API call
-
-    getUsersList(offset + limit >= 0 ? offset + limit : 0, limit);
+  const goToNextPage = (currentPage) => {
+    dispatch(getUsers({ offset: (currentPage - 1) * 10, limit: 10 }, userRole));
+    setPage(currentPage);
   };
 
   if (isLoading) {
@@ -83,7 +57,11 @@ export default function Users() {
   }
 
   return (
-    <div className="border-t">
+    <div className="ml-4 h-screen">
+      <div className="flex my-5">
+        <p className="font-semibold text-gray-700">Admin: Users</p>
+      </div>
+
       <div className="rounded-2xl p-2 pt-6 mt-4">
         <Table className="border rounded-2xl">
           <TableHeader className="sticky top-0 z-10 bg-muted">
@@ -99,15 +77,15 @@ export default function Users() {
           </TableHeader>
 
           <TableBody className="**:data-[slot=table-cell]:first:w-8">
-            {users?.map((user, id) => {
+            {users?.users?.map((user, id) => {
               return (
                 <TableRow key={`user-${id}`}>
                   <TableCell colSpan={1} className="h-24 text-center">
-                    {user?.firstName && "-"}
+                    {user?.first_name ?? ""}
                   </TableCell>
 
                   <TableCell colSpan={1} className="h-24 text-center">
-                    {user?.lastName && "-"}
+                    {user?.last_name ?? "-"}
                   </TableCell>
 
                   <TableCell colSpan={1} className="h-24 text-center">
@@ -123,65 +101,32 @@ export default function Users() {
           </TableBody>
         </Table>
 
-        <div className="flex items-center justify-between px-4 pt-3">
-          <div className="hidden flex-1 text-sm text-muted-foreground lg:flex"></div>
-
-          <div className="flex w-full items-center gap-8 lg:w-fit">
-            <div className="hidden items-center gap-2 lg:flex">
-              <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                Rows per page
-              </Label>
-
-              <Select
-                value={limit}
-                onValueChange={(value) => handlePageLimit(Number(value))}
-              >
-                <SelectTrigger className="w-20" id="rows-per-page">
-                  <SelectValue placeholder={limit} />
-                </SelectTrigger>
-
-                <SelectContent side="top">
-                  {[10, 20, 30, 40, 50].map((pageSize) => (
-                    <SelectItem key={pageSize} value={`${pageSize}`}>
-                      {pageSize}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex w-fit items-center justify-center text-sm font-medium">
-              {/* Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()} */}
-              Page 1 of 3
-            </div>
-
-            <div className="ml-auto flex items-center gap-2 lg:ml-0">
-              <Button
-                variant="outline"
-                className="size-8"
-                size="icon"
-                // disabled={!table.getCanPreviousPage()}
-                onClick={() => goToPreviousPage()}
-                disabled={false}
-              >
-                <span className="sr-only">Go to previous page</span>
-                <ChevronLeftIcon />
-              </Button>
-
-              <Button
-                variant="outline"
-                className="size-8"
-                size="icon"
-                // disabled={!table.getCanNextPage()}
-                onClick={() => goToNextPage()}
-                disabled={false}
-              >
-                <span className="sr-only">Go to next page</span>
-                <ChevronRightIcon />
-              </Button>
-            </div>
+        <div className="ml-auto flex justify-end mt-2 mr-3 items-center gap-2 lg:ml-0">
+          <div className="flex w-fit items-center justify-center text-sm font-medium">
+            {`Page ${page} of ${Math.ceil(users.pagination?.totalCount / 10)}`}
           </div>
+
+          <Button
+            variant="outline"
+            className="size-8"
+            size="icon"
+            disabled={page === Math.floor(users?.pagination?.totalCount / 10)}
+            onClick={() => goToPreviousPage(page - 1)}
+          >
+            <span className="sr-only">Go to previous page</span>
+            <ChevronLeftIcon />
+          </Button>
+
+          <Button
+            variant="outline"
+            className="size-8"
+            size="icon"
+            disabled={page === Math.ceil(users?.pagination?.totalCount / 10)}
+            onClick={() => goToNextPage(page + 1)}
+          >
+            <span className="sr-only">Go to next page</span>
+            <ChevronRightIcon />
+          </Button>
         </div>
       </div>
     </div>

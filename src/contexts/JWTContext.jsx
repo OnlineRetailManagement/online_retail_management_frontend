@@ -1,6 +1,8 @@
 //
 
 import { createContext, useEffect, useReducer } from "react";
+// sonner-toast
+import { toast } from "sonner";
 // utils
 import axios from "../utils/axios";
 import { isValidToken, setSession } from "../utils/jwt";
@@ -35,11 +37,6 @@ const handlers = {
       userRole,
     };
   },
-  LOGOUT: (state) => ({
-    ...state,
-    isAuthenticated: false,
-    user: null,
-  }),
   REGISTER: (state, action) => {
     const { user, userRole } = action.payload;
 
@@ -50,6 +47,12 @@ const handlers = {
       userRole,
     };
   },
+  LOGOUT: (state) => ({
+    ...state,
+    isAuthenticated: false,
+    user: null,
+    userRole: null,
+  }),
 };
 
 const reducer = (state, action) =>
@@ -135,6 +138,10 @@ function AuthProvider({ children }) {
           userRole: normaliseUserRole(rest?.role[0]?.authority),
         })
       );
+      localStorage.setItem(
+        "userRole",
+        normaliseUserRole(rest?.role[0]?.authority)
+      );
 
       setSession(jwt);
       dispatch({
@@ -151,12 +158,14 @@ function AuthProvider({ children }) {
     const response = await axios.post("/public/signup", {
       email,
       password,
-      firstName,
-      lastName,
+      first_name: firstName,
+      last_name: lastName,
       role,
     });
 
     if (response.data?.code === 200 && response.data?.data?.email) {
+      toast.success("Your profile has been created successfully ...!!!");
+
       const { jwt = "", ...rest } = response.data.data;
 
       localStorage.setItem(
@@ -165,6 +174,10 @@ function AuthProvider({ children }) {
           ...rest,
           userRole: normaliseUserRole(rest?.role[0]?.authority),
         })
+      );
+      localStorage.setItem(
+        "userRole",
+        normaliseUserRole(rest?.role[0]?.authority)
       );
 
       setSession(jwt);
@@ -175,12 +188,21 @@ function AuthProvider({ children }) {
           userRole: normaliseUserRole(rest?.role[0]?.authority),
         },
       });
+    } else {
+      toast.error(
+        "Oops, We are facing some issues while creating your profile ...!!!"
+      );
     }
   };
 
   const logout = async () => {
     setSession(null);
+    window.localStorage.removeItem("accessToken");
+    window.localStorage.removeItem("userData");
+    window.localStorage.removeItem("userRole");
     dispatch({ type: "LOGOUT" });
+
+    toast.success("User has been logged out successfully ...!!!");
   };
 
   return (

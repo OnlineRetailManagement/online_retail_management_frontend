@@ -17,11 +17,17 @@ export const ADMIN_PATHS = {
 // vendor
 export const VENDOR_PATHS = {
   dashboard: "/vendor/dashboard",
-  myProducts: "/vendor/my-products",
+  products: "/vendor/products",
+  addProducts: "/vendor/add-products",
+  orders: "/vendor/orders",
+  profile: "/vendor/profile",
 };
 
 // user
 export const USER_PATHS = {
-  dashboard: "/user/dashboard",
+  // dashboard: "/user/dashboard",
+  products: "/user/products",
+  cart: "/user/cart",
+  orders: "/user/orders",
   profile: "/user/profile",
 };
