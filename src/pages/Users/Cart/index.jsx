@@ -122,8 +122,10 @@ export default function Carts() {
                     <div className="basis-3/10">
                       <img
                         src={
-                          BASE_URL_IMG +
-                            crt?.product?.attachments[0]?.file_name ?? ""
+                          crt?.product?.attachments[0]?.file_name
+                            ? BASE_URL_IMG +
+                              crt?.product?.attachments[0]?.file_name
+                            : ""
                         }
                         className="border"
                       />

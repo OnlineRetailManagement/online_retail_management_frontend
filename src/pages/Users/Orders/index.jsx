@@ -64,8 +64,10 @@ export default function Orders() {
                       <div className="basis-3/10">
                         <img
                           src={
-                            BASE_URL_IMG +
-                              order?.product?.attachments[0]?.file_name ?? ""
+                            order?.product?.attachments[0]?.file_name
+                              ? BASE_URL_IMG +
+                                order?.product?.attachments[0]?.file_name
+                              : ""
                           }
                           className="border"
                         />
