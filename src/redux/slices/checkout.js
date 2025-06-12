@@ -12,7 +12,7 @@ import { dispatch } from "../store";
 const initialState = {
   isLoading: false,
   error: null,
-  checkoutResponse: {},
+  checkoutResponse: [],
 };
 
 const slice = createSlice({
@@ -23,14 +23,14 @@ const slice = createSlice({
     startLoading(state) {
       state.isLoading = true;
       state.error = null;
-      state.checkoutResponse = {};
+      state.checkoutResponse = [];
     },
 
     // HAS ERROR
     hasError(state, action) {
       state.isLoading = false;
       state.error = action.payload;
-      state.checkoutResponse = {};
+      state.checkoutResponse = [];
     },
 
     // CHECKOUT SUCCESS
@@ -53,7 +53,9 @@ export function userCheckout(payload) {
     try {
       const response = await axios.post("/user/order-checkout", payload);
 
-      dispatch(slice.actions.checkOutSuccess(response.data ?? {}));
+      dispatch(
+        slice.actions.checkOutSuccess(response.data?.data?.order_items ?? [])
+      );
       toast.success("Your Order has been placed successfully ...!");
     } catch (error) {
       dispatch(slice.actions.hasError(error));
