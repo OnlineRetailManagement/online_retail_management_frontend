@@ -2,7 +2,7 @@
 
 // base API end-point
 export const BASE_URL =
-  import.meta.env.REACT_APP_HOST_API_KEY || "http://localhost:8080";
+  import.meta.env.REACT_APP_HOST_API_KEY || "https://backend-19dv.onrender.com/";
 
 export const BASE_URL_IMG =
-  "http://localhost:8080/public/attachment?file_name=";
+  "https://backend-19dv.onrender.com/public/attachment?file_name=";
