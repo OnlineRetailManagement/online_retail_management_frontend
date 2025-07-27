@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/Switch";
+import { Switch } from "@/components/ui/switch";
 // routes
 import { PATH_AUTH } from "../../routes/paths";
 // hooks
